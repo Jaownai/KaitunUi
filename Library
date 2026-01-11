@@ -135,7 +135,6 @@ function M.Init(config)
 	local Nowdo = Instance.new("TextLabel")
 	local NamePlayer = Instance.new("TextLabel")
 	local Logo = Instance.new("ImageLabel")
-	local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
 
 	ToggleUi.Name = "ToggleUi"
 	ToggleUi.Parent = KaitunUi
@@ -224,9 +223,6 @@ function M.Init(config)
 	Logo.Position = UDim2.new(0.510172546, 0, 0.500492632, 0)
 	Logo.Size = UDim2.new(0.390625, 0, 0.695732832, 0)
 	Logo.Image = "rbxassetid://132337846628803"
-
-	UIAspectRatioConstraint.Parent = Blackscreen
-	UIAspectRatioConstraint.AspectRatio = 1.781
 
 	state.gui = KaitunUi
 	state.toggle = ToggleUi
