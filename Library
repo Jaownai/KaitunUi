@@ -41,30 +41,46 @@ end
 
 local function cleanup()
 	local success, errorMessage = xpcall(function()
-		for _, connection in pairs(_state.eventConnections) do
-			safeDisconnect(connection)
+		if _state.eventConnections then
+			for _, connection in pairs(_state.eventConnections) do
+				safeDisconnect(connection)
+			end
 		end
-		
+
 		if _state.activeTween then
 			pcall(function() _state.activeTween:Cancel() end)
-			_state.activeTween = nil
 		end
-		
+
 		if _state.heartbeatConnection then
 			safeDisconnect(_state.heartbeatConnection)
-			_state.heartbeatConnection = nil
 		end
-		
+
 		if _state.screenGui then
 			_state.screenGui:Destroy()
 		end
-		
-		table.clear(_state.eventConnections)
-		table.clear(_state)
+
+		_state.screenGui = nil
+		_state.overlayFrame = nil
+		_state.contentContainer = nil
+		_state.toggleButton = nil
+		_state.statusLabel = nil
+		_state.timerLabel = nil
+		_state.playerInfoLabel = nil
+		_state.logoImage = nil
+		_state.clockStartTime = 0
+		_state.lastSecondUpdate = -1
+		_state.heartbeatConnection = nil
+		_state.isVisible = true
+		_state.isAnimating = false
+		_state.defaultPosition = nil
+		_state.hoverPosition = nil
+		_state.activeTween = nil
+
+		_state.eventConnections = {}
 	end, function(message)
 		return debug.traceback(message, 2)
 	end)
-	
+
 	if not success then
 		warn("[UIManager] Cleanup failed:", errorMessage)
 	end
@@ -316,26 +332,11 @@ function UIManager.Initialize(configuration)
 		)
 
 		_state.eventConnections.buttonActivated = toggleButton.Activated:Connect(toggleInterface)
-		
 		_state.eventConnections.buttonHoverEnter = toggleButton.MouseEnter:Connect(function() 
 			animateToggleButton(_state.hoverPosition) 
 		end)
 		_state.eventConnections.buttonHoverLeave = toggleButton.MouseLeave:Connect(function() 
 			animateToggleButton(_state.defaultPosition) 
-		end)
-		
-		_state.eventConnections.buttonInputBegan = toggleButton.InputBegan:Connect(function(input)
-			if input.UserInputType == Enum.UserInputType.MouseMovement or 
-			   input.UserInputType == Enum.UserInputType.Touch then
-				animateToggleButton(_state.hoverPosition)
-			end
-		end)
-		
-		_state.eventConnections.buttonInputEnded = toggleButton.InputEnded:Connect(function(input)
-			if input.UserInputType == Enum.UserInputType.MouseMovement or 
-			   input.UserInputType == Enum.UserInputType.Touch then
-				animateToggleButton(_state.defaultPosition)
-			end
 		end)
 
 		_state.clockStartTime = os.clock()
