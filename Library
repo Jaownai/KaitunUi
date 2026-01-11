@@ -316,11 +316,26 @@ function UIManager.Initialize(configuration)
 		)
 
 		_state.eventConnections.buttonActivated = toggleButton.Activated:Connect(toggleInterface)
+		
 		_state.eventConnections.buttonHoverEnter = toggleButton.MouseEnter:Connect(function() 
 			animateToggleButton(_state.hoverPosition) 
 		end)
 		_state.eventConnections.buttonHoverLeave = toggleButton.MouseLeave:Connect(function() 
 			animateToggleButton(_state.defaultPosition) 
+		end)
+		
+		_state.eventConnections.buttonInputBegan = toggleButton.InputBegan:Connect(function(input)
+			if input.UserInputType == Enum.UserInputType.MouseMovement or 
+			   input.UserInputType == Enum.UserInputType.Touch then
+				animateToggleButton(_state.hoverPosition)
+			end
+		end)
+		
+		_state.eventConnections.buttonInputEnded = toggleButton.InputEnded:Connect(function(input)
+			if input.UserInputType == Enum.UserInputType.MouseMovement or 
+			   input.UserInputType == Enum.UserInputType.Touch then
+				animateToggleButton(_state.defaultPosition)
+			end
 		end)
 
 		_state.clockStartTime = os.clock()
