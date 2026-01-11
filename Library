@@ -2,312 +2,407 @@ local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
 
-local M = {}
+local UIManager = {}
 
-local state = {
-	gui = nil,
-	blackscreen = nil,
-	content = nil,
-	toggle = nil,
-
-	nowdo = nil,
-	timeLabel = nil,
-	playerLabel = nil,
-	logo = nil,
-
-	startClock = 0,
-	lastSec = -1,
-	hb = nil,
-
-	shown = true,
-	animBusy = false,
-
-	basePos = nil,
-	hoverPos = nil,
-	activeTw = nil,
+local _state = {
+	screenGui = nil,
+	overlayFrame = nil,
+	contentContainer = nil,
+	toggleButton = nil,
+	statusLabel = nil,
+	timerLabel = nil,
+	playerInfoLabel = nil,
+	logoImage = nil,
+	clockStartTime = 0,
+	lastSecondUpdate = -1,
+	heartbeatConnection = nil,
+	isVisible = true,
+	isAnimating = false,
+	defaultPosition = nil,
+	hoverPosition = nil,
+	activeTween = nil,
+	eventConnections = {}
 }
 
---------------------------------------------------
--- Utils
---------------------------------------------------
+local ANIMATION_SHOW = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+local ANIMATION_HIDE = TweenInfo.new(0.15)
+local ANIMATION_BUTTON = TweenInfo.new(0.12, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
 
-local function destroy()
-	if state.hb then
-		state.hb:Disconnect()
-		state.hb = nil
-	end
-	if state.gui then
-		state.gui:Destroy()
-	end
-	table.clear(state)
-end
-
-local function setTransparency(root, value)
-	for _, d in ipairs(root:GetDescendants()) do
-		if d:IsA("TextLabel") then
-			d.TextTransparency = value
-		elseif d:IsA("ImageLabel") or d:IsA("ImageButton") then
-			d.ImageTransparency = value
-		elseif d:IsA("Frame") then
-			d.BackgroundTransparency = value
-		end
-	end
-end
-
---------------------------------------------------
--- Show / Hide
---------------------------------------------------
-
-local function showUI()
-	if state.animBusy or state.shown then return end
-	state.animBusy = true
-
-	state.blackscreen.Visible = true
-	state.blackscreen.BackgroundTransparency = 1
-	setTransparency(state.blackscreen, 1)
-
-	local bg = TweenService:Create(
-		state.blackscreen,
-		TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-		{BackgroundTransparency = 0}
-	)
-	bg:Play()
-
-	for _, d in ipairs(state.blackscreen:GetDescendants()) do
-		if d:IsA("TextLabel") then
-			TweenService:Create(d, TweenInfo.new(0.2), {TextTransparency = 0}):Play()
-		elseif d:IsA("ImageLabel") or d:IsA("ImageButton") then
-			TweenService:Create(d, TweenInfo.new(0.2), {ImageTransparency = 0}):Play()
-		end
-	end
-
-	bg.Completed:Wait()
-	state.shown = true
-	state.animBusy = false
-end
-
-local function hideUI()
-	if state.animBusy or not state.shown then return end
-	state.animBusy = true
-
-	for _, d in ipairs(state.blackscreen:GetDescendants()) do
-		if d:IsA("TextLabel") then
-			TweenService:Create(d, TweenInfo.new(0.15), {TextTransparency = 1}):Play()
-		elseif d:IsA("ImageLabel") or d:IsA("ImageButton") then
-			TweenService:Create(d, TweenInfo.new(0.15), {ImageTransparency = 1}):Play()
-		end
-	end
-
-	local bg = TweenService:Create(
-		state.blackscreen,
-		TweenInfo.new(0.15),
-		{BackgroundTransparency = 1}
-	)
-	bg:Play()
-	bg.Completed:Wait()
-
-	state.blackscreen.Visible = false
-	state.shown = false
-	state.animBusy = false
-end
-
-local function toggleUI()
-	if state.shown then hideUI() else showUI() end
-end
-
-local function tweenToggle(toPos)
-	if state.activeTw then
-		pcall(function() state.activeTw:Cancel() end)
-	end
-	state.activeTw = TweenService:Create(
-		state.toggle,
-		TweenInfo.new(0.12, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-		{Position = toPos}
-	)
-	state.activeTw:Play()
-end
-
---------------------------------------------------
--- Init
---------------------------------------------------
-
-function M.Init(config)
-	config = config or {}
-	destroy()
-
-	local lp = Players.LocalPlayer
-	local pg = lp:WaitForChild("PlayerGui")
-
-	local PLAYER_TEXT = tostring(config.PLAYER_TEXT or ("Name : " .. lp.Name))
-	local TEXT_MAX = tonumber(config.TEXT_MAX) or 72
-	local HOVER_RIGHT = tonumber(config.HOVER_RIGHT) or 40
-
-	--------------------------------------------------
-	-- ScreenGui
-	--------------------------------------------------
-
-	local Gui = Instance.new("ScreenGui")
-	Gui.Name = "KaitunUi"
-	Gui.IgnoreGuiInset = true
-	Gui.ResetOnSpawn = false
-	Gui.Parent = pg
-
-	--------------------------------------------------
-	-- Toggle Button
-	--------------------------------------------------
-
-	local Toggle = Instance.new("ImageButton")
-	Toggle.Parent = Gui
-	Toggle.Size = UDim2.fromScale(0.05, 0.09)
-	Toggle.Position = UDim2.fromScale(-0.02, 0.2)
-	Toggle.BackgroundTransparency = 1
-	Toggle.Image = "rbxassetid://131686022689169"
-	Toggle.ZIndex = 100
-	Instance.new("UICorner", Toggle).CornerRadius = UDim.new(1, 0)
-
-	--------------------------------------------------
-	-- Blackscreen
-	--------------------------------------------------
-
-	local Blackscreen = Instance.new("Frame")
-	Blackscreen.Parent = Gui
-	Blackscreen.Size = UDim2.fromScale(1, 1)
-	Blackscreen.Position = UDim2.fromScale(0, 0)
-	Blackscreen.BackgroundColor3 = Color3.fromRGB(5, 5, 5)
-
-	--------------------------------------------------
-	-- Center / Content
-	--------------------------------------------------
-
-	local Center = Instance.new("Frame")
-	Center.Parent = Blackscreen
-	Center.AnchorPoint = Vector2.new(0.5, 0.5)
-	Center.Position = UDim2.fromScale(0.5, 0.5)
-	Center.Size = UDim2.fromScale(1, 1)
-	Center.BackgroundTransparency = 1
-
-	local Content = Instance.new("Frame")
-	Content.Parent = Center
-	Content.AnchorPoint = Vector2.new(0.5, 0.5)
-	Content.Position = UDim2.fromScale(0.5, 0.5)
-	Content.Size = UDim2.fromScale(0.9, 0.9)
-	Content.BackgroundTransparency = 1
-
-	local AR = Instance.new("UIAspectRatioConstraint")
-	AR.Parent = Content
-	AR.AspectRatio = 16 / 9
-	AR.AspectType = Enum.AspectType.ScaleWithParentSize
-
-	--------------------------------------------------
-	-- Helper: Label
-	--------------------------------------------------
-
-	local function makeLabel(text, y)
-		local l = Instance.new("TextLabel")
-		l.Parent = Content
-		l.AnchorPoint = Vector2.new(0.5, 0.5)
-		l.Position = UDim2.fromScale(0.5, y)
-		l.Size = UDim2.fromScale(1, 0.1)
-		l.BackgroundTransparency = 1
-		l.Font = Enum.Font.FredokaOne
-		l.TextColor3 = Color3.new(1, 1, 1)
-		l.TextScaled = true
-		l.TextWrapped = true
-		l.Text = text
-
-		local c = Instance.new("UITextSizeConstraint")
-		c.Parent = l
-		c.MinTextSize = 18
-		c.MaxTextSize = TEXT_MAX
-
-		return l
-	end
-
-	--------------------------------------------------
-	-- Logo (CENTER)
-	--------------------------------------------------
-
-	local Logo = Instance.new("ImageLabel")
-	Logo.Parent = Content
-	Logo.AnchorPoint = Vector2.new(0.5, 0.5)
-	Logo.Position = UDim2.fromScale(0.5, 0.5)
-	Logo.Size = UDim2.fromScale(0.35, 0.7)
-	Logo.BackgroundTransparency = 1
-	Logo.Image = "rbxassetid://132337846628803"
-	Logo.ImageTransparency = 0
-	Logo.ZIndex = 5
-
-	--------------------------------------------------
-	-- Texts
-	--------------------------------------------------
-
-	local NameServices = makeLabel("Shino Farm Services", 0.08)
-	local NamePlayer = makeLabel(PLAYER_TEXT, 0.17)
-	local Nowdo = makeLabel("Now do : Ready", 0.78)
-	local Time = makeLabel("Time : 0 Hour 0 Minutes 0 Seconds", 0.88)
-
-	--------------------------------------------------
-	-- State
-	--------------------------------------------------
-
-	state.gui = Gui
-	state.toggle = Toggle
-	state.blackscreen = Blackscreen
-	state.content = Content
-	state.nowdo = Nowdo
-	state.timeLabel = Time
-	state.playerLabel = NamePlayer
-	state.logo = Logo
-
-	state.basePos = Toggle.Position
-	state.hoverPos = UDim2.new(
-		state.basePos.X.Scale,
-		state.basePos.X.Offset + HOVER_RIGHT,
-		state.basePos.Y.Scale,
-		state.basePos.Y.Offset
-	)
-
-	Toggle.Activated:Connect(toggleUI)
-	Toggle.MouseEnter:Connect(function() tweenToggle(state.hoverPos) end)
-	Toggle.MouseLeave:Connect(function() tweenToggle(state.basePos) end)
-
-	--------------------------------------------------
-	-- Timer
-	--------------------------------------------------
-
-	state.startClock = os.clock()
-	state.lastSec = -1
-
-	state.hb = RunService.Heartbeat:Connect(function()
-		local sec = math.floor(os.clock() - state.startClock)
-		if sec ~= state.lastSec then
-			state.lastSec = sec
-			Time.Text = ("Time : %d Hour %d Minutes %d Seconds")
-				:format(sec // 3600, (sec % 3600) // 60, sec % 60)
+local function safeDisconnect(connection)
+	local success, errorMessage = pcall(function()
+		if connection and typeof(connection) == "RBXScriptConnection" then
+			connection:Disconnect()
 		end
 	end)
-
-	return M
-end
-
---------------------------------------------------
--- Public API
---------------------------------------------------
-
-function M.SetNowDo(text)
-	if state.nowdo then
-		state.nowdo.Text = "Now do : " .. tostring(text or "")
+	if not success then
+		warn("[UIManager] Connection disconnect failed:", errorMessage)
 	end
 end
 
-function M.SetPlayerText(text)
-	if state.playerLabel then
-		state.playerLabel.Text = tostring(text or "")
+local function cleanup()
+	local success, errorMessage = xpcall(function()
+		for _, connection in pairs(_state.eventConnections) do
+			safeDisconnect(connection)
+		end
+		
+		if _state.activeTween then
+			pcall(function() _state.activeTween:Cancel() end)
+			_state.activeTween = nil
+		end
+		
+		if _state.heartbeatConnection then
+			safeDisconnect(_state.heartbeatConnection)
+			_state.heartbeatConnection = nil
+		end
+		
+		if _state.screenGui then
+			_state.screenGui:Destroy()
+		end
+		
+		table.clear(_state.eventConnections)
+		table.clear(_state)
+	end, function(message)
+		return debug.traceback(message, 2)
+	end)
+	
+	if not success then
+		warn("[UIManager] Cleanup failed:", errorMessage)
 	end
 end
 
-function M.Destroy()
-	destroy()
+local function applyTransparencyToDescendants(parentElement, transparencyValue)
+	local success, errorMessage = pcall(function()
+		for _, descendant in ipairs(parentElement:GetDescendants()) do
+			if descendant:IsA("TextLabel") then
+				descendant.TextTransparency = transparencyValue
+			elseif descendant:IsA("ImageLabel") or descendant:IsA("ImageButton") then
+				descendant.ImageTransparency = transparencyValue
+			elseif descendant:IsA("Frame") then
+				descendant.BackgroundTransparency = transparencyValue
+			end
+		end
+	end)
+	
+	if not success then
+		warn("[UIManager] Apply transparency failed:", errorMessage)
+	end
 end
 
-return M
+local function createTween(element, tweenInfo, properties)
+	local success, result = pcall(function()
+		return TweenService:Create(element, tweenInfo, properties)
+	end)
+	
+	if success then
+		pcall(function() result:Play() end)
+		return result
+	else
+		warn("[UIManager] Tween creation failed:", result)
+		return nil
+	end
+end
+
+local function showInterface()
+	if _state.isAnimating or _state.isVisible then return end
+	
+	local success, errorMessage = xpcall(function()
+		_state.isAnimating = true
+		_state.overlayFrame.Visible = true
+		_state.overlayFrame.BackgroundTransparency = 1
+		applyTransparencyToDescendants(_state.overlayFrame, 1)
+
+		local backgroundTween = createTween(_state.overlayFrame, ANIMATION_SHOW, {BackgroundTransparency = 0})
+
+		for _, descendant in ipairs(_state.overlayFrame:GetDescendants()) do
+			if descendant:IsA("TextLabel") then
+				createTween(descendant, ANIMATION_SHOW, {TextTransparency = 0})
+			elseif descendant:IsA("ImageLabel") or descendant:IsA("ImageButton") then
+				createTween(descendant, ANIMATION_SHOW, {ImageTransparency = 0})
+			end
+		end
+
+		if backgroundTween then
+			backgroundTween.Completed:Wait()
+		else
+			task.wait(0.2)
+		end
+		
+		_state.isVisible = true
+		_state.isAnimating = false
+	end, function(message)
+		return debug.traceback(message, 2)
+	end)
+	
+	if not success then
+		warn("[UIManager] Show interface failed:", errorMessage)
+		_state.isAnimating = false
+	end
+end
+
+local function hideInterface()
+	if _state.isAnimating or not _state.isVisible then return end
+	
+	local success, errorMessage = xpcall(function()
+		_state.isAnimating = true
+
+		for _, descendant in ipairs(_state.overlayFrame:GetDescendants()) do
+			if descendant:IsA("TextLabel") then
+				createTween(descendant, ANIMATION_HIDE, {TextTransparency = 1})
+			elseif descendant:IsA("ImageLabel") or descendant:IsA("ImageButton") then
+				createTween(descendant, ANIMATION_HIDE, {ImageTransparency = 1})
+			end
+		end
+
+		local backgroundTween = createTween(_state.overlayFrame, ANIMATION_HIDE, {BackgroundTransparency = 1})
+		
+		if backgroundTween then
+			backgroundTween.Completed:Wait()
+		else
+			task.wait(0.15)
+		end
+
+		_state.overlayFrame.Visible = false
+		_state.isVisible = false
+		_state.isAnimating = false
+	end, function(message)
+		return debug.traceback(message, 2)
+	end)
+	
+	if not success then
+		warn("[UIManager] Hide interface failed:", errorMessage)
+		_state.isAnimating = false
+	end
+end
+
+local function toggleInterface()
+	local success, errorMessage = pcall(function()
+		if _state.isVisible then 
+			hideInterface() 
+		else 
+			showInterface() 
+		end
+	end)
+	
+	if not success then
+		warn("[UIManager] Toggle interface failed:", errorMessage)
+	end
+end
+
+local function animateToggleButton(targetPosition)
+	local success, errorMessage = pcall(function()
+		if _state.activeTween then
+			_state.activeTween:Cancel()
+		end
+		_state.activeTween = createTween(_state.toggleButton, ANIMATION_BUTTON, {Position = targetPosition})
+	end)
+	
+	if not success then
+		warn("[UIManager] Toggle button animation failed:", errorMessage)
+	end
+end
+
+local function createTextLabel(parentElement, labelText, yPosition, maxTextSize)
+	local success, textLabel = pcall(function()
+		local label = Instance.new("TextLabel")
+		label.Parent = parentElement
+		label.AnchorPoint = Vector2.new(0.5, 0.5)
+		label.Position = UDim2.fromScale(0.5, yPosition)
+		label.Size = UDim2.fromScale(1, 0.1)
+		label.BackgroundTransparency = 1
+		label.Font = Enum.Font.FredokaOne
+		label.TextColor3 = Color3.new(1, 1, 1)
+		label.TextScaled = true
+		label.TextWrapped = true
+		label.Text = labelText
+
+		local sizeConstraint = Instance.new("UITextSizeConstraint")
+		sizeConstraint.Parent = label
+		sizeConstraint.MinTextSize = 18
+		sizeConstraint.MaxTextSize = maxTextSize
+
+		return label
+	end)
+	
+	if not success then
+		warn("[UIManager] Text label creation failed:", textLabel)
+		return nil
+	end
+	
+	return textLabel
+end
+
+function UIManager.Initialize(configuration)
+	local success, result = xpcall(function()
+		configuration = configuration or {}
+		cleanup()
+
+		local localPlayer = Players.LocalPlayer
+		local playerGui = localPlayer:WaitForChild("PlayerGui")
+
+		local playerDisplayText = tostring(configuration.PLAYER_TEXT or ("Name : " .. localPlayer.Name))
+		local maxTextSize = tonumber(configuration.TEXT_MAX) or 72
+		local hoverOffset = tonumber(configuration.HOVER_RIGHT) or 40
+
+		local screenGui = Instance.new("ScreenGui")
+		screenGui.Name = "KaitunUi"
+		screenGui.IgnoreGuiInset = true
+		screenGui.ResetOnSpawn = false
+		screenGui.Parent = playerGui
+
+		local toggleButton = Instance.new("ImageButton")
+		toggleButton.Parent = screenGui
+		toggleButton.Size = UDim2.fromScale(0.05, 0.09)
+		toggleButton.Position = UDim2.fromScale(-0.02, 0.2)
+		toggleButton.BackgroundTransparency = 1
+		toggleButton.Image = "rbxassetid://131686022689169"
+		toggleButton.ZIndex = 100
+		Instance.new("UICorner", toggleButton).CornerRadius = UDim.new(1, 0)
+
+		local overlayFrame = Instance.new("Frame")
+		overlayFrame.Parent = screenGui
+		overlayFrame.Size = UDim2.fromScale(1, 1)
+		overlayFrame.Position = UDim2.fromScale(0, 0)
+		overlayFrame.BackgroundColor3 = Color3.fromRGB(5, 5, 5)
+
+		local centerFrame = Instance.new("Frame")
+		centerFrame.Parent = overlayFrame
+		centerFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+		centerFrame.Position = UDim2.fromScale(0.5, 0.5)
+		centerFrame.Size = UDim2.fromScale(1, 1)
+		centerFrame.BackgroundTransparency = 1
+
+		local contentContainer = Instance.new("Frame")
+		contentContainer.Parent = centerFrame
+		contentContainer.AnchorPoint = Vector2.new(0.5, 0.5)
+		contentContainer.Position = UDim2.fromScale(0.5, 0.5)
+		contentContainer.Size = UDim2.fromScale(0.9, 0.9)
+		contentContainer.BackgroundTransparency = 1
+
+		local aspectRatio = Instance.new("UIAspectRatioConstraint")
+		aspectRatio.Parent = contentContainer
+		aspectRatio.AspectRatio = 16 / 9
+		aspectRatio.AspectType = Enum.AspectType.ScaleWithParentSize
+
+		local logoImage = Instance.new("ImageLabel")
+		logoImage.Parent = contentContainer
+		logoImage.AnchorPoint = Vector2.new(0.5, 0.5)
+		logoImage.Position = UDim2.fromScale(0.5, 0.5)
+		logoImage.Size = UDim2.fromScale(0.35, 0.7)
+		logoImage.BackgroundTransparency = 1
+		logoImage.Image = "rbxassetid://132337846628803"
+		logoImage.ImageTransparency = 0
+		logoImage.ZIndex = 5
+
+		local serviceNameLabel = createTextLabel(contentContainer, "Shino Farm Services", 0.08, maxTextSize)
+		local playerNameLabel = createTextLabel(contentContainer, playerDisplayText, 0.17, maxTextSize)
+		local statusLabel = createTextLabel(contentContainer, "Now do : Ready", 0.78, maxTextSize)
+		local timerLabel = createTextLabel(contentContainer, "Time : 0 Hour 0 Minutes 0 Seconds", 0.88, maxTextSize)
+
+		_state.screenGui = screenGui
+		_state.toggleButton = toggleButton
+		_state.overlayFrame = overlayFrame
+		_state.contentContainer = contentContainer
+		_state.statusLabel = statusLabel
+		_state.timerLabel = timerLabel
+		_state.playerInfoLabel = playerNameLabel
+		_state.logoImage = logoImage
+
+		_state.defaultPosition = toggleButton.Position
+		_state.hoverPosition = UDim2.new(
+			_state.defaultPosition.X.Scale,
+			_state.defaultPosition.X.Offset + hoverOffset,
+			_state.defaultPosition.Y.Scale,
+			_state.defaultPosition.Y.Offset
+		)
+
+		_state.eventConnections.buttonActivated = toggleButton.Activated:Connect(toggleInterface)
+		_state.eventConnections.buttonHoverEnter = toggleButton.MouseEnter:Connect(function() 
+			animateToggleButton(_state.hoverPosition) 
+		end)
+		_state.eventConnections.buttonHoverLeave = toggleButton.MouseLeave:Connect(function() 
+			animateToggleButton(_state.defaultPosition) 
+		end)
+
+		_state.clockStartTime = os.clock()
+		_state.lastSecondUpdate = -1
+
+		_state.heartbeatConnection = RunService.Heartbeat:Connect(function()
+			local timerSuccess, timerError = pcall(function()
+				local elapsedSeconds = math.floor(os.clock() - _state.clockStartTime)
+				if elapsedSeconds ~= _state.lastSecondUpdate then
+					_state.lastSecondUpdate = elapsedSeconds
+					if timerLabel then
+						timerLabel.Text = string.format(
+							"Time : %d Hour %d Minutes %d Seconds",
+							elapsedSeconds // 3600, 
+							(elapsedSeconds % 3600) // 60, 
+							elapsedSeconds % 60
+						)
+					end
+				end
+			end)
+			
+			if not timerSuccess then
+				warn("[UIManager] Timer update failed:", timerError)
+			end
+		end)
+
+		return UIManager
+	end, function(message)
+		return debug.traceback(message, 2)
+	end)
+	
+	if not success then
+		warn("[UIManager] Initialization failed:", result)
+		cleanup()
+		return nil
+	end
+	
+	return result
+end
+
+function UIManager.SetStatus(statusText)
+	local success, errorMessage = pcall(function()
+		if _state.statusLabel then
+			_state.statusLabel.Text = "Now do : " .. tostring(statusText or "")
+		end
+	end)
+	
+	if not success then
+		warn("[UIManager] Set status failed:", errorMessage)
+	end
+end
+
+function UIManager.SetPlayerInfo(playerText)
+	local success, errorMessage = pcall(function()
+		if _state.playerInfoLabel then
+			_state.playerInfoLabel.Text = tostring(playerText or "")
+		end
+	end)
+	
+	if not success then
+		warn("[UIManager] Set player info failed:", errorMessage)
+	end
+end
+
+function UIManager.Show()
+	showInterface()
+end
+
+function UIManager.Hide()
+	hideInterface()
+end
+
+function UIManager.Toggle()
+	toggleInterface()
+end
+
+function UIManager.IsVisible()
+	return _state.isVisible
+end
+
+function UIManager.Destroy()
+	cleanup()
+end
+
+return UIManager
