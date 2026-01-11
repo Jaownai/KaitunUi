@@ -13,6 +13,7 @@ local state = {
 	nowdo = nil,
 	timeLabel = nil,
 	playerLabel = nil,
+	logo = nil,
 
 	startClock = 0,
 	lastSec = -1,
@@ -75,7 +76,7 @@ local function showUI()
 	for _, d in ipairs(state.blackscreen:GetDescendants()) do
 		if d:IsA("TextLabel") then
 			TweenService:Create(d, TweenInfo.new(0.2), {TextTransparency = 0}):Play()
-		elseif d:IsA("ImageLabel") then
+		elseif d:IsA("ImageLabel") or d:IsA("ImageButton") then
 			TweenService:Create(d, TweenInfo.new(0.2), {ImageTransparency = 0}):Play()
 		end
 	end
@@ -92,7 +93,7 @@ local function hideUI()
 	for _, d in ipairs(state.blackscreen:GetDescendants()) do
 		if d:IsA("TextLabel") then
 			TweenService:Create(d, TweenInfo.new(0.15), {TextTransparency = 1}):Play()
-		elseif d:IsA("ImageLabel") then
+		elseif d:IsA("ImageLabel") or d:IsA("ImageButton") then
 			TweenService:Create(d, TweenInfo.new(0.15), {ImageTransparency = 1}):Play()
 		end
 	end
@@ -115,7 +116,9 @@ local function toggleUI()
 end
 
 local function tweenToggle(toPos)
-	if state.activeTw then pcall(function() state.activeTw:Cancel() end) end
+	if state.activeTw then
+		pcall(function() state.activeTw:Cancel() end)
+	end
 	state.activeTw = TweenService:Create(
 		state.toggle,
 		TweenInfo.new(0.12, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
@@ -163,7 +166,7 @@ function M.Init(config)
 	Instance.new("UICorner", Toggle).CornerRadius = UDim.new(1, 0)
 
 	--------------------------------------------------
-	-- Blackscreen (Fullscreen)
+	-- Blackscreen
 	--------------------------------------------------
 
 	local Blackscreen = Instance.new("Frame")
@@ -173,7 +176,7 @@ function M.Init(config)
 	Blackscreen.BackgroundColor3 = Color3.fromRGB(5, 5, 5)
 
 	--------------------------------------------------
-	-- Center & Content
+	-- Center / Content
 	--------------------------------------------------
 
 	local Center = Instance.new("Frame")
@@ -196,7 +199,7 @@ function M.Init(config)
 	AR.AspectType = Enum.AspectType.ScaleWithParentSize
 
 	--------------------------------------------------
-	-- Helper: Big Text Label
+	-- Helper: Label
 	--------------------------------------------------
 
 	local function makeLabel(text, y)
@@ -221,7 +224,21 @@ function M.Init(config)
 	end
 
 	--------------------------------------------------
-	-- UI Elements
+	-- Logo (CENTER)
+	--------------------------------------------------
+
+	local Logo = Instance.new("ImageLabel")
+	Logo.Parent = Content
+	Logo.AnchorPoint = Vector2.new(0.5, 0.5)
+	Logo.Position = UDim2.fromScale(0.5, 0.5)
+	Logo.Size = UDim2.fromScale(0.35, 0.7)
+	Logo.BackgroundTransparency = 1
+	Logo.Image = "rbxassetid://132337846628803"
+	Logo.ImageTransparency = 0
+	Logo.ZIndex = 5
+
+	--------------------------------------------------
+	-- Texts
 	--------------------------------------------------
 
 	local NameServices = makeLabel("Shino Farm Services", 0.08)
@@ -240,6 +257,7 @@ function M.Init(config)
 	state.nowdo = Nowdo
 	state.timeLabel = Time
 	state.playerLabel = NamePlayer
+	state.logo = Logo
 
 	state.basePos = Toggle.Position
 	state.hoverPos = UDim2.new(
@@ -273,7 +291,7 @@ function M.Init(config)
 end
 
 --------------------------------------------------
--- Public APIs
+-- Public API
 --------------------------------------------------
 
 function M.SetNowDo(text)
