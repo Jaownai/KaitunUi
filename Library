@@ -3,22 +3,32 @@ local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
 
 local M = {}
+
 local state = {
 	gui = nil,
+	blackscreen = nil,
+	content = nil,
+	toggle = nil,
+
 	nowdo = nil,
 	timeLabel = nil,
+	playerLabel = nil,
+
 	startClock = 0,
 	lastSec = -1,
 	hb = nil,
-	toggle = nil,
-	blackscreen = nil,
-	content = nil,
+
 	shown = true,
 	animBusy = false,
+
 	basePos = nil,
 	hoverPos = nil,
 	activeTw = nil,
 }
+
+--------------------------------------------------
+-- Utils
+--------------------------------------------------
 
 local function destroy()
 	if state.hb then
@@ -42,6 +52,10 @@ local function setTransparency(root, value)
 		end
 	end
 end
+
+--------------------------------------------------
+-- Show / Hide
+--------------------------------------------------
 
 local function showUI()
 	if state.animBusy or state.shown then return end
@@ -110,23 +124,35 @@ local function tweenToggle(toPos)
 	state.activeTw:Play()
 end
 
+--------------------------------------------------
+-- Init
+--------------------------------------------------
+
 function M.Init(config)
 	config = config or {}
-	local HOVER_RIGHT = tonumber(config.HOVER_RIGHT) or 40
-
 	destroy()
 
 	local lp = Players.LocalPlayer
 	local pg = lp:WaitForChild("PlayerGui")
 
+	local PLAYER_TEXT = tostring(config.PLAYER_TEXT or ("Name : " .. lp.Name))
+	local TEXT_MAX = tonumber(config.TEXT_MAX) or 72
+	local HOVER_RIGHT = tonumber(config.HOVER_RIGHT) or 40
+
+	--------------------------------------------------
 	-- ScreenGui
+	--------------------------------------------------
+
 	local Gui = Instance.new("ScreenGui")
 	Gui.Name = "KaitunUi"
 	Gui.IgnoreGuiInset = true
 	Gui.ResetOnSpawn = false
 	Gui.Parent = pg
 
-	-- Toggle
+	--------------------------------------------------
+	-- Toggle Button
+	--------------------------------------------------
+
 	local Toggle = Instance.new("ImageButton")
 	Toggle.Parent = Gui
 	Toggle.Size = UDim2.fromScale(0.05, 0.09)
@@ -136,14 +162,20 @@ function M.Init(config)
 	Toggle.ZIndex = 100
 	Instance.new("UICorner", Toggle).CornerRadius = UDim.new(1, 0)
 
+	--------------------------------------------------
 	-- Blackscreen (Fullscreen)
+	--------------------------------------------------
+
 	local Blackscreen = Instance.new("Frame")
 	Blackscreen.Parent = Gui
 	Blackscreen.Size = UDim2.fromScale(1, 1)
 	Blackscreen.Position = UDim2.fromScale(0, 0)
 	Blackscreen.BackgroundColor3 = Color3.fromRGB(5, 5, 5)
 
-	-- Center
+	--------------------------------------------------
+	-- Center & Content
+	--------------------------------------------------
+
 	local Center = Instance.new("Frame")
 	Center.Parent = Blackscreen
 	Center.AnchorPoint = Vector2.new(0.5, 0.5)
@@ -151,7 +183,6 @@ function M.Init(config)
 	Center.Size = UDim2.fromScale(1, 1)
 	Center.BackgroundTransparency = 1
 
-	-- Content (Responsive)
 	local Content = Instance.new("Frame")
 	Content.Parent = Center
 	Content.AnchorPoint = Vector2.new(0.5, 0.5)
@@ -164,43 +195,52 @@ function M.Init(config)
 	AR.AspectRatio = 16 / 9
 	AR.AspectType = Enum.AspectType.ScaleWithParentSize
 
-	-- Logo
-	local Logo = Instance.new("ImageLabel")
-	Logo.Parent = Content
-	Logo.AnchorPoint = Vector2.new(0.5, 0.5)
-	Logo.Position = UDim2.fromScale(0.5, 0.5)
-	Logo.Size = UDim2.fromScale(0.35, 0.7)
-	Logo.BackgroundTransparency = 1
-	Logo.Image = "rbxassetid://132337846628803"
+	--------------------------------------------------
+	-- Helper: Big Text Label
+	--------------------------------------------------
 
-	-- Texts
 	local function makeLabel(text, y)
 		local l = Instance.new("TextLabel")
 		l.Parent = Content
 		l.AnchorPoint = Vector2.new(0.5, 0.5)
 		l.Position = UDim2.fromScale(0.5, y)
-		l.Size = UDim2.fromScale(1, 0.08)
+		l.Size = UDim2.fromScale(1, 0.1)
 		l.BackgroundTransparency = 1
 		l.Font = Enum.Font.FredokaOne
-		l.TextColor3 = Color3.new(1,1,1)
+		l.TextColor3 = Color3.new(1, 1, 1)
 		l.TextScaled = true
+		l.TextWrapped = true
 		l.Text = text
-		Instance.new("UITextSizeConstraint", l).MaxTextSize = 48
+
+		local c = Instance.new("UITextSizeConstraint")
+		c.Parent = l
+		c.MinTextSize = 18
+		c.MaxTextSize = TEXT_MAX
+
 		return l
 	end
 
+	--------------------------------------------------
+	-- UI Elements
+	--------------------------------------------------
+
 	local NameServices = makeLabel("Shino Farm Services", 0.08)
-	local NamePlayer = makeLabel("Name : "..lp.Name, 0.16)
+	local NamePlayer = makeLabel(PLAYER_TEXT, 0.17)
 	local Nowdo = makeLabel("Now do : Ready", 0.78)
 	local Time = makeLabel("Time : 0 Hour 0 Minutes 0 Seconds", 0.88)
 
+	--------------------------------------------------
 	-- State
+	--------------------------------------------------
+
 	state.gui = Gui
 	state.toggle = Toggle
 	state.blackscreen = Blackscreen
 	state.content = Content
 	state.nowdo = Nowdo
 	state.timeLabel = Time
+	state.playerLabel = NamePlayer
+
 	state.basePos = Toggle.Position
 	state.hoverPos = UDim2.new(
 		state.basePos.X.Scale,
@@ -213,6 +253,10 @@ function M.Init(config)
 	Toggle.MouseEnter:Connect(function() tweenToggle(state.hoverPos) end)
 	Toggle.MouseLeave:Connect(function() tweenToggle(state.basePos) end)
 
+	--------------------------------------------------
+	-- Timer
+	--------------------------------------------------
+
 	state.startClock = os.clock()
 	state.lastSec = -1
 
@@ -221,16 +265,26 @@ function M.Init(config)
 		if sec ~= state.lastSec then
 			state.lastSec = sec
 			Time.Text = ("Time : %d Hour %d Minutes %d Seconds")
-				:format(sec//3600, (sec%3600)//60, sec%60)
+				:format(sec // 3600, (sec % 3600) // 60, sec % 60)
 		end
 	end)
 
 	return M
 end
 
+--------------------------------------------------
+-- Public APIs
+--------------------------------------------------
+
 function M.SetNowDo(text)
 	if state.nowdo then
 		state.nowdo.Text = "Now do : " .. tostring(text or "")
+	end
+end
+
+function M.SetPlayerText(text)
+	if state.playerLabel then
+		state.playerLabel.Text = tostring(text or "")
 	end
 end
 
