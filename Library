@@ -1,0 +1,271 @@
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
+
+local M = {}
+local state = {
+	gui = nil,
+	nowdo = nil,
+	timeLabel = nil,
+	startClock = 0,
+	lastSec = -1,
+	hb = nil,
+	toggle = nil,
+	blackscreen = nil,
+	shown = true,
+	animBusy = false,
+	basePos = nil,
+	hoverPos = nil,
+	activeTw = nil,
+}
+
+local function destroy()
+	if state.hb then
+		state.hb:Disconnect()
+		state.hb = nil
+	end
+	if state.gui and state.gui.Parent then
+		state.gui:Destroy()
+	end
+	state.gui = nil
+	state.nowdo = nil
+	state.timeLabel = nil
+	state.toggle = nil
+	state.blackscreen = nil
+	state.shown = true
+	state.animBusy = false
+	state.basePos = nil
+	state.hoverPos = nil
+	state.activeTw = nil
+end
+
+local function setDescendantsTransparency(root, value)
+	for _, d in ipairs(root:GetDescendants()) do
+		if d:IsA("TextLabel") or d:IsA("TextButton") or d:IsA("TextBox") then
+			d.TextTransparency = value
+		elseif d:IsA("ImageLabel") or d:IsA("ImageButton") then
+			d.ImageTransparency = value
+		elseif d:IsA("Frame") or d:IsA("ScrollingFrame") then
+			d.BackgroundTransparency = value
+		end
+	end
+end
+
+local function showUI()
+	if state.animBusy or state.shown then return end
+	state.animBusy = true
+	state.blackscreen.Visible = true
+	state.blackscreen.BackgroundTransparency = 1
+	setDescendantsTransparency(state.blackscreen, 1)
+
+	local tw1 = TweenService:Create(state.blackscreen, TweenInfo.new(0.18, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundTransparency = 0})
+	tw1:Play()
+
+	task.defer(function()
+		for _, d in ipairs(state.blackscreen:GetDescendants()) do
+			if d:IsA("TextLabel") then
+				TweenService:Create(d, TweenInfo.new(0.18, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextTransparency = 0}):Play()
+			elseif d:IsA("ImageLabel") then
+				TweenService:Create(d, TweenInfo.new(0.18, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageTransparency = 0}):Play()
+			end
+		end
+	end)
+
+	tw1.Completed:Wait()
+	state.shown = true
+	state.animBusy = false
+end
+
+local function hideUI()
+	if state.animBusy or not state.shown then return end
+	state.animBusy = true
+
+	for _, d in ipairs(state.blackscreen:GetDescendants()) do
+		if d:IsA("TextLabel") then
+			TweenService:Create(d, TweenInfo.new(0.14, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextTransparency = 1}):Play()
+		elseif d:IsA("ImageLabel") then
+			TweenService:Create(d, TweenInfo.new(0.14, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageTransparency = 1}):Play()
+		end
+	end
+
+	local tw1 = TweenService:Create(state.blackscreen, TweenInfo.new(0.14, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundTransparency = 1})
+	tw1:Play()
+	tw1.Completed:Wait()
+
+	state.blackscreen.Visible = false
+	state.shown = false
+	state.animBusy = false
+end
+
+local function toggleUI()
+	if state.shown then
+		hideUI()
+	else
+		showUI()
+	end
+end
+
+local function tweenToggle(toPos)
+	if state.activeTw then pcall(function() state.activeTw:Cancel() end) end
+	state.activeTw = TweenService:Create(state.toggle, TweenInfo.new(0.12, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Position = toPos})
+	state.activeTw:Play()
+end
+
+function M.Init(config)
+	config = config or {}
+	local HOVER_RIGHT = tonumber(config.HOVER_RIGHT) or 40
+
+	destroy()
+
+	local lp = Players.LocalPlayer
+	local pg = lp:WaitForChild("PlayerGui")
+
+	local KaitunUi = Instance.new("ScreenGui")
+	KaitunUi.Name = "KaitunUi"
+	KaitunUi.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+	KaitunUi.ResetOnSpawn = false
+	KaitunUi.IgnoreGuiInset = true
+	KaitunUi.Parent = pg
+
+	local ToggleUi = Instance.new("ImageButton")
+	local UICorner = Instance.new("UICorner")
+	local Blackscreen = Instance.new("Frame")
+	local NameServices = Instance.new("TextLabel")
+	local Time = Instance.new("TextLabel")
+	local Nowdo = Instance.new("TextLabel")
+	local NamePlayer = Instance.new("TextLabel")
+	local Logo = Instance.new("ImageLabel")
+	local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
+
+	ToggleUi.Name = "ToggleUi"
+	ToggleUi.Parent = KaitunUi
+	ToggleUi.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	ToggleUi.BorderSizePixel = 0
+	ToggleUi.Position = UDim2.new(-0.0208333023, 0, 0.182745829, 0)
+	ToggleUi.Size = UDim2.new(0.0369791649, 0, 0.0658627078, 0)
+	ToggleUi.ZIndex = 100
+	ToggleUi.Image = "rbxassetid://131686022689169"
+	ToggleUi.AutoButtonColor = true
+	ToggleUi.Active = true
+
+	UICorner.CornerRadius = UDim.new(1, 0)
+	UICorner.Parent = ToggleUi
+
+	Blackscreen.Name = "Blackscreen"
+	Blackscreen.Parent = KaitunUi
+	Blackscreen.AnchorPoint = Vector2.new(0.5, 0.5)
+	Blackscreen.BackgroundColor3 = Color3.fromRGB(3, 3, 3)
+	Blackscreen.BorderSizePixel = 0
+	Blackscreen.Position = UDim2.new(0.49996841, 0, 0.499203444, 0)
+	Blackscreen.Size = UDim2.new(1.00052106, 0, 0.998148143, 0)
+	Blackscreen.Visible = true
+
+	NameServices.Name = "NameServices"
+	NameServices.Parent = Blackscreen
+	NameServices.AnchorPoint = Vector2.new(0.5, 0.5)
+	NameServices.BackgroundTransparency = 1
+	NameServices.BorderSizePixel = 0
+	NameServices.Position = UDim2.new(0.500567913, 0, 0.0786401778, 0)
+	NameServices.Size = UDim2.new(0.997916639, 0, 0.076994434, 0)
+	NameServices.Font = Enum.Font.FredokaOne
+	NameServices.Text = "Shino Farm Services"
+	NameServices.TextColor3 = Color3.fromRGB(255, 255, 255)
+	NameServices.TextScaled = true
+	NameServices.TextSize = 24
+	NameServices.TextWrapped = true
+
+	Time.Name = "Time"
+	Time.Parent = Blackscreen
+	Time.AnchorPoint = Vector2.new(0.5, 0.5)
+	Time.BackgroundTransparency = 1
+	Time.BorderSizePixel = 0
+	Time.Position = UDim2.new(0.498461097, 0, 0.884612501, 0)
+	Time.Size = UDim2.new(0.998437524, 0, 0.0834879428, 0)
+	Time.Font = Enum.Font.FredokaOne
+	Time.Text = "Time : 0 Hour 0 Minutes 0 Seconds"
+	Time.TextColor3 = Color3.fromRGB(255, 255, 255)
+	Time.TextScaled = true
+	Time.TextSize = 24
+	Time.TextWrapped = true
+
+	Nowdo.Name = "Now do"
+	Nowdo.Parent = Blackscreen
+	Nowdo.AnchorPoint = Vector2.new(0.5, 0.5)
+	Nowdo.BackgroundTransparency = 1
+	Nowdo.BorderSizePixel = 0
+	Nowdo.Position = UDim2.new(0.500994146, 0, 0.778334796, 0)
+	Nowdo.Size = UDim2.new(0.997916639, 0, 0.0807050094, 0)
+	Nowdo.Font = Enum.Font.FredokaOne
+	Nowdo.Text = "Now do :"
+	Nowdo.TextColor3 = Color3.fromRGB(255, 255, 255)
+	Nowdo.TextScaled = true
+	Nowdo.TextSize = 24
+	Nowdo.TextWrapped = true
+
+	NamePlayer.Name = "NamePlayer"
+	NamePlayer.Parent = Blackscreen
+	NamePlayer.AnchorPoint = Vector2.new(0.5, 0.5)
+	NamePlayer.BackgroundTransparency = 1
+	NamePlayer.BorderSizePixel = 0
+	NamePlayer.Position = UDim2.new(0.500567913, 0, 0.153526261, 0)
+	NamePlayer.Size = UDim2.new(0.997916639, 0, 0.058441557, 0)
+	NamePlayer.Font = Enum.Font.FredokaOne
+	NamePlayer.Text = "Name : " .. (lp and lp.Name or "")
+	NamePlayer.TextColor3 = Color3.fromRGB(255, 255, 255)
+	NamePlayer.TextScaled = true
+	NamePlayer.TextSize = 24
+	NamePlayer.TextWrapped = true
+
+	Logo.Name = "Logo"
+	Logo.Parent = Blackscreen
+	Logo.AnchorPoint = Vector2.new(0.5, 0.5)
+	Logo.BackgroundTransparency = 1
+	Logo.BorderSizePixel = 0
+	Logo.Position = UDim2.new(0.510172546, 0, 0.500492632, 0)
+	Logo.Size = UDim2.new(0.390625, 0, 0.695732832, 0)
+	Logo.Image = "rbxassetid://132337846628803"
+
+	UIAspectRatioConstraint.Parent = Blackscreen
+	UIAspectRatioConstraint.AspectRatio = 1.781
+
+	state.gui = KaitunUi
+	state.toggle = ToggleUi
+	state.blackscreen = Blackscreen
+	state.nowdo = Nowdo
+	state.timeLabel = Time
+
+	state.basePos = ToggleUi.Position
+	state.hoverPos = UDim2.new(state.basePos.X.Scale, state.basePos.X.Offset + HOVER_RIGHT, state.basePos.Y.Scale, state.basePos.Y.Offset)
+
+	ToggleUi.Activated:Connect(toggleUI)
+	ToggleUi.MouseEnter:Connect(function() tweenToggle(state.hoverPos) end)
+	ToggleUi.MouseLeave:Connect(function() tweenToggle(state.basePos) end)
+
+	state.startClock = os.clock()
+	state.lastSec = -1
+
+	state.hb = RunService.Heartbeat:Connect(function()
+		local sec = math.floor(os.clock() - state.startClock)
+		if sec ~= state.lastSec then
+			state.lastSec = sec
+			local h = math.floor(sec / 3600)
+			local m = math.floor((sec % 3600) / 60)
+			local s = sec % 60
+			Time.Text = ("Time : %d Hour %d Minutes %d Seconds"):format(h, m, s)
+		end
+	end)
+
+	return M
+end
+
+function M.SetNowDo(text)
+	if state.nowdo then
+		state.nowdo.Text = "Now do : " .. tostring(text or "")
+	end
+end
+
+function M.Destroy()
+	destroy()
+end
+
+return M
