@@ -534,9 +534,6 @@ local function setupScrollingFrame()
 	local SELECT_BG = Color3.fromRGB(129, 35, 36)
 	local SELECT_OUT = Color3.fromRGB(209, 57, 59)
 	
-	local DISABLED_BG = Color3.fromRGB(60, 60, 60)
-	local DISABLED_OUT = Color3.fromRGB(110, 110, 110)
-	
 	local selectedItem = nil
 	local selectedDefaults = nil
 	
@@ -544,16 +541,10 @@ local function setupScrollingFrame()
 		local bg = item:FindFirstChild("Background")
 		local outline = item:FindFirstChild("Outline")
 	
-		local enabled = item:GetAttribute("Enabled")
-		if enabled == nil then enabled = true end
-	
-		if enabled then
-			if bg then tween(bg, { ImageColor3 = SELECT_BG }, 0.18):Play() end
-			if outline then tween(outline, { ImageColor3 = SELECT_OUT }, 0.18):Play() end
-		else
-			if bg then tween(bg, { ImageColor3 = DISABLED_BG }, 0.18):Play() end
-			if outline then tween(outline, { ImageColor3 = DISABLED_OUT }, 0.18):Play() end
-		end
+		-- Don't change colors based on enabled state anymore
+		-- Just let the selection colors stay as they are
+		if bg then tween(bg, { ImageColor3 = SELECT_BG }, 0.18):Play() end
+		if outline then tween(outline, { ImageColor3 = SELECT_OUT }, 0.18):Play() end
 	end
 	
 	local function restoreDefaults(item, defaults)
@@ -621,12 +612,6 @@ local function setupScrollingFrame()
 			selectedItemValue.Value = item
 			applySelected(item)
 		end
-	
-		item:GetAttributeChangedSignal("Enabled"):Connect(function()
-			if item == selectedItem then
-				applySelected(item)
-			end
-		end)
 	
 		hitbox.Active = true
 		hitbox.Selectable = true
