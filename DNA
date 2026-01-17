@@ -1,6 +1,3 @@
--- UI Library v1.0
--- Enhanced version with full functionality matching original 100%
-
 local UILib = Instance.new("ScreenGui")
 local Canvas = Instance.new("Frame")
 local Main = Instance.new("Frame")
@@ -25,7 +22,6 @@ local UIScale_3 = Instance.new("UIScale")
 local ScrollingFrame = Instance.new("ScrollingFrame")
 local UIListLayout = Instance.new("UIListLayout")
 
--- Properties matching original exactly
 UILib.Name = "UILib"
 UILib.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 UILib.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
@@ -141,9 +137,7 @@ UIGradient.Transparency = NumberSequence.new{NumberSequenceKeypoint.new(0.00, 0.
 UIGradient.Parent = X
 
 UIScale.Parent = Icon
-
 UIAspectRatioConstraint.Parent = Close
-
 UIScale_2.Parent = Close
 
 OuterOutline.Name = "OuterOutline"
@@ -221,7 +215,6 @@ UIListLayout.Parent = ScrollingFrame
 UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 
--- Create Function Template (matches original exactly)
 local FunctionTemplate = Instance.new("Frame")
 FunctionTemplate.Name = "FunctionTemplate"
 FunctionTemplate.AnchorPoint = Vector2.new(0.5, 0.5)
@@ -296,399 +289,245 @@ Hitbox.Position = UDim2.new(0.5, 0, 0.5, 0)
 Hitbox.Size = UDim2.new(1, 0, 1, 0)
 Hitbox.ZIndex = 5
 
--- SCRIPTS
-
--- Close Button Script
 local function setupCloseButton()
 	local TweenService = game:GetService("TweenService")
-	
 	local close = Close
 	local sprite = close:WaitForChild("Sprite")
 	local inner = sprite:WaitForChild("InnerSprite")
 	local icon = close:WaitForChild("Icon")
-	
 	local closeScale = close:FindFirstChildOfClass("UIScale") or Instance.new("UIScale", close)
 	closeScale.Scale = 1
-	
 	local spriteDefaultColor = sprite.ImageColor3
 	local innerDefaultColor = inner.ImageColor3
 	local iconDefaultColor = icon.ImageColor3
-	
 	local spriteHoverColor = Color3.fromRGB(255, 17, 69)
 	local innerHoverColor = Color3.fromRGB(255, 78, 110)
 	local iconHoverColor = Color3.fromRGB(255, 14, 70)
-	
-	local spriteFrames = {
-		Vector2.new(0, 256),
-		Vector2.new(256, 256),
-		Vector2.new(512, 256),
-		Vector2.new(768, 256),
-		Vector2.new(0, 0),
-		Vector2.new(256, 0),
-		Vector2.new(512, 0),
-		Vector2.new(768, 0),
-	}
-	
-	local innerFrames = {
-		Vector2.new(0, 768),
-		Vector2.new(256, 768),
-		Vector2.new(512, 768),
-		Vector2.new(768, 768),
-		Vector2.new(0, 512),
-		Vector2.new(256, 512),
-		Vector2.new(512, 512),
-		Vector2.new(768, 512),
-	}
-	
+	local spriteFrames = {Vector2.new(0, 256), Vector2.new(256, 256), Vector2.new(512, 256), Vector2.new(768, 256), Vector2.new(0, 0), Vector2.new(256, 0), Vector2.new(512, 0), Vector2.new(768, 0)}
+	local innerFrames = {Vector2.new(0, 768), Vector2.new(256, 768), Vector2.new(512, 768), Vector2.new(768, 768), Vector2.new(0, 512), Vector2.new(256, 512), Vector2.new(512, 512), Vector2.new(768, 512)}
 	local BASE_SPEED = 0.05
 	local speed = BASE_SPEED
 	local index = 1
-	
 	task.spawn(function()
 		while close.Parent do
 			sprite.ImageRectOffset = spriteFrames[index]
 			inner.ImageRectOffset = innerFrames[index]
 			index += 1
-			if index > #spriteFrames then
-				index = 1
-			end
+			if index > #spriteFrames then index = 1 end
 			task.wait(speed)
 		end
 	end)
-	
 	close.Active = true
 	close.Selectable = true
-	
 	local hovering = false
 	local pressed = false
 	local tScale
-	
 	local function tween(obj, props, time)
-		return TweenService:Create(
-			obj,
-			TweenInfo.new(time, Enum.EasingStyle.Sine, Enum.EasingDirection.Out),
-			props
-		)
+		return TweenService:Create(obj, TweenInfo.new(time, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), props)
 	end
-	
 	local function setIdle()
 		if pressed then return end
 		if tScale then tScale:Cancel() end
-		tScale = tween(closeScale, { Scale = 1 }, 0.18)
+		tScale = tween(closeScale, {Scale = 1}, 0.18)
 		tScale:Play()
-	
-		tween(sprite, { ImageColor3 = spriteDefaultColor }, 0.2):Play()
-		tween(inner, { ImageColor3 = innerDefaultColor }, 0.2):Play()
-		tween(icon, { ImageColor3 = iconDefaultColor }, 0.2):Play()
-	
+		tween(sprite, {ImageColor3 = spriteDefaultColor}, 0.2):Play()
+		tween(inner, {ImageColor3 = innerDefaultColor}, 0.2):Play()
+		tween(icon, {ImageColor3 = iconDefaultColor}, 0.2):Play()
 		speed = BASE_SPEED
 	end
-	
 	local function setHover()
 		if pressed then return end
 		if tScale then tScale:Cancel() end
-		tScale = tween(closeScale, { Scale = 1.06 }, 0.2)
+		tScale = tween(closeScale, {Scale = 1.06}, 0.2)
 		tScale:Play()
-	
-		tween(sprite, { ImageColor3 = spriteHoverColor }, 0.2):Play()
-		tween(inner, { ImageColor3 = innerHoverColor }, 0.2):Play()
-		tween(icon, { ImageColor3 = iconHoverColor }, 0.2):Play()
+		tween(sprite, {ImageColor3 = spriteHoverColor}, 0.2):Play()
+		tween(inner, {ImageColor3 = innerHoverColor}, 0.2):Play()
+		tween(icon, {ImageColor3 = iconHoverColor}, 0.2):Play()
 	end
-	
 	local function setDown()
 		pressed = true
 		if tScale then tScale:Cancel() end
-		tScale = tween(closeScale, { Scale = 0.94 }, 0.24)
+		tScale = tween(closeScale, {Scale = 0.94}, 0.24)
 		tScale:Play()
 	end
-	
 	local function setUp()
 		pressed = false
-		if hovering then
-			setHover()
-		else
-			setIdle()
-		end
+		if hovering then setHover() else setIdle() end
 	end
-	
-	close.MouseEnter:Connect(function()
-		hovering = true
-		setHover()
-	end)
-	
-	close.MouseLeave:Connect(function()
-		hovering = false
-		setIdle()
-	end)
-	
+	close.MouseEnter:Connect(function() hovering = true setHover() end)
+	close.MouseLeave:Connect(function() hovering = false setIdle() end)
 	close.InputBegan:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseButton1
-			or input.UserInputType == Enum.UserInputType.Touch then
-			setDown()
-		end
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then setDown() end
 	end)
-	
 	close.InputEnded:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseButton1
-			or input.UserInputType == Enum.UserInputType.Touch then
-			setUp()
-			-- CLOSE THE UI
-			UILib.Enabled = false
-		end
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then setUp() UILib.Enabled = false end
 	end)
 end
 
--- Toggle Button Script
 local function setupToggle()
 	local toggle = Toggle
 	local main = Main
 	local button = toggle:WaitForChild("Button")
 	local scroll = main:WaitForChild("ScrollingFrame")
-	
 	local selectedItem = scroll:FindFirstChild("SelectedItem")
 	if not selectedItem then
 		selectedItem = Instance.new("ObjectValue")
 		selectedItem.Name = "SelectedItem"
 		selectedItem.Parent = scroll
 	end
-	
 	local function getEnabled(item)
 		if not item then return nil end
 		local v = item:GetAttribute("Enabled")
 		if v == nil then v = true end
 		return v
 	end
-	
 	local function setButtonText(item)
 		local enabled = getEnabled(item)
-		if enabled == nil then
-			button.Text = "ON"
-			return
-		end
+		if enabled == nil then button.Text = "ON" return end
 		button.Text = enabled and "ON" or "OFF"
 	end
-	
 	button.Active = true
 	button.Selectable = true
-	
-	selectedItem:GetPropertyChangedSignal("Value"):Connect(function()
-		setButtonText(selectedItem.Value)
-	end)
-	
+	selectedItem:GetPropertyChangedSignal("Value"):Connect(function() setButtonText(selectedItem.Value) end)
 	button.Activated:Connect(function()
 		local item = selectedItem.Value
-		if not item then
-			warn("[Toggle] No selected item")
-			return
-		end
-	
+		if not item then warn("[Toggle] No selected item") return end
 		local enabled = getEnabled(item)
 		enabled = not enabled
 		item:SetAttribute("Enabled", enabled)
-	
 		setButtonText(item)
 	end)
-	
 	setButtonText(selectedItem.Value)
 end
 
--- ScrollingFrame Script
 local function setupScrollingFrame()
 	local TweenService = game:GetService("TweenService")
-	
 	local scroll = ScrollingFrame
-	
 	local itemClicked = scroll:FindFirstChild("ItemClicked")
 	if not itemClicked then
 		itemClicked = Instance.new("BindableEvent")
 		itemClicked.Name = "ItemClicked"
 		itemClicked.Parent = scroll
 	end
-	
 	local selectedItemValue = scroll:FindFirstChild("SelectedItem")
 	if not selectedItemValue then
 		selectedItemValue = Instance.new("ObjectValue")
 		selectedItemValue.Name = "SelectedItem"
 		selectedItemValue.Parent = scroll
 	end
-	
 	local function tween(obj, props, time)
 		return TweenService:Create(obj, TweenInfo.new(time, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), props)
 	end
-	
 	local function getScale(inst)
 		local s = inst:FindFirstChildOfClass("UIScale")
-		if not s then
-			s = Instance.new("UIScale")
-			s.Scale = 1
-			s.Parent = inst
-		end
+		if not s then s = Instance.new("UIScale") s.Scale = 1 s.Parent = inst end
 		return s
 	end
-	
 	local function mixToBlack(color, amount)
 		amount = math.clamp(amount or 0, 0, 1)
 		return color:Lerp(Color3.new(0, 0, 0), amount)
 	end
-	
 	local SELECT_BG = Color3.fromRGB(129, 35, 36)
 	local SELECT_OUT = Color3.fromRGB(209, 57, 59)
-	
 	local selectedItem = nil
 	local selectedDefaults = nil
-	
 	local function applySelected(item)
 		local bg = item:FindFirstChild("Background")
 		local outline = item:FindFirstChild("Outline")
-	
-		-- Don't change colors based on enabled state anymore
-		-- Just let the selection colors stay as they are
-		if bg then tween(bg, { ImageColor3 = SELECT_BG }, 0.18):Play() end
-		if outline then tween(outline, { ImageColor3 = SELECT_OUT }, 0.18):Play() end
+		if bg then tween(bg, {ImageColor3 = SELECT_BG}, 0.18):Play() end
+		if outline then tween(outline, {ImageColor3 = SELECT_OUT}, 0.18):Play() end
 	end
-	
 	local function restoreDefaults(item, defaults)
 		local bg = item:FindFirstChild("Background")
 		local outline = item:FindFirstChild("Outline")
-		if bg and defaults and defaults.bg then tween(bg, { ImageColor3 = defaults.bg }, 0.18):Play() end
-		if outline and defaults and defaults.out then tween(outline, { ImageColor3 = defaults.out }, 0.18):Play() end
+		if bg and defaults and defaults.bg then tween(bg, {ImageColor3 = defaults.bg}, 0.18):Play() end
+		if outline and defaults and defaults.out then tween(outline, {ImageColor3 = defaults.out}, 0.18):Play() end
 	end
-	
 	local function bindFunctionItem(item)
 		if item.Name == "FunctionTemplate" then return end
-		
 		local hitbox = item:WaitForChild("Hitbox")
 		local bg = item:FindFirstChild("Background")
 		local outline = item:FindFirstChild("Outline")
 		local nameLabel = item:FindFirstChild("NameFunction")
-	
-		if item:GetAttribute("Enabled") == nil then
-			item:SetAttribute("Enabled", true)
-		end
-	
+		if item:GetAttribute("Enabled") == nil then item:SetAttribute("Enabled", true) end
 		local bgDefault = bg and bg.ImageColor3 or nil
 		local outDefault = outline and outline.ImageColor3 or nil
-	
 		local hoverBlack = 0.10
 		local hovering = false
 		local pressed = false
-	
 		local scale = getScale(hitbox)
 		scale.Scale = 1
 		local tScale
-	
 		local function setIdle()
 			if pressed then return end
 			if item == selectedItem then return end
 			if tScale then tScale:Cancel() end
-			tScale = tween(scale, { Scale = 1 }, 0.14)
+			tScale = tween(scale, {Scale = 1}, 0.14)
 			tScale:Play()
-			if bg and bgDefault then tween(bg, { ImageColor3 = bgDefault }, 0.16):Play() end
-			if outline and outDefault then tween(outline, { ImageColor3 = outDefault }, 0.16):Play() end
+			if bg and bgDefault then tween(bg, {ImageColor3 = bgDefault}, 0.16):Play() end
+			if outline and outDefault then tween(outline, {ImageColor3 = outDefault}, 0.16):Play() end
 		end
-	
 		local function setHover()
 			if pressed then return end
 			if item == selectedItem then return end
 			if tScale then tScale:Cancel() end
-			tScale = tween(scale, { Scale = 1.01 }, 0.14)
+			tScale = tween(scale, {Scale = 1.01}, 0.14)
 			tScale:Play()
-			if bg and bgDefault then tween(bg, { ImageColor3 = mixToBlack(bgDefault, hoverBlack) }, 0.16):Play() end
-			if outline and outDefault then tween(outline, { ImageColor3 = mixToBlack(outDefault, 0.06) }, 0.16):Play() end
+			if bg and bgDefault then tween(bg, {ImageColor3 = mixToBlack(bgDefault, hoverBlack)}, 0.16):Play() end
+			if outline and outDefault then tween(outline, {ImageColor3 = mixToBlack(outDefault, 0.06)}, 0.16):Play() end
 		end
-	
 		local function setDownVisual()
 			if tScale then tScale:Cancel() end
-			tScale = tween(scale, { Scale = 0.985 }, 0.18)
+			tScale = tween(scale, {Scale = 0.985}, 0.18)
 			tScale:Play()
 		end
-	
 		local function chooseThis()
-			if selectedItem and selectedItem ~= item then
-				restoreDefaults(selectedItem, selectedDefaults)
-			end
+			if selectedItem and selectedItem ~= item then restoreDefaults(selectedItem, selectedDefaults) end
 			selectedItem = item
-			selectedDefaults = { bg = bgDefault, out = outDefault }
+			selectedDefaults = {bg = bgDefault, out = outDefault}
 			selectedItemValue.Value = item
 			applySelected(item)
 		end
-	
 		hitbox.Active = true
 		hitbox.Selectable = true
-	
-		hitbox.MouseEnter:Connect(function()
-			hovering = true
-			setHover()
-		end)
-	
-		hitbox.MouseLeave:Connect(function()
-			hovering = false
-			setIdle()
-		end)
-	
+		hitbox.MouseEnter:Connect(function() hovering = true setHover() end)
+		hitbox.MouseLeave:Connect(function() hovering = false setIdle() end)
 		hitbox.InputBegan:Connect(function(input)
-			if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-				pressed = true
-				setDownVisual()
-			end
+			if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then pressed = true setDownVisual() end
 		end)
-	
 		hitbox.InputEnded:Connect(function(input)
 			if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 				pressed = false
 				if item == selectedItem then
-					if hovering then
-						if tScale then tScale:Cancel() end
-						tScale = tween(scale, { Scale = 1.01 }, 0.14)
-						tScale:Play()
-					else
-						if tScale then tScale:Cancel() end
-						tScale = tween(scale, { Scale = 1 }, 0.14)
-						tScale:Play()
-					end
-				else
-					if hovering then setHover() else setIdle() end
-				end
+					if hovering then if tScale then tScale:Cancel() end tScale = tween(scale, {Scale = 1.01}, 0.14) tScale:Play()
+					else if tScale then tScale:Cancel() end tScale = tween(scale, {Scale = 1}, 0.14) tScale:Play() end
+				else if hovering then setHover() else setIdle() end end
 			end
 		end)
-	
 		hitbox.Activated:Connect(function()
 			chooseThis()
-	
 			local enabled = item:GetAttribute("Enabled")
 			if enabled == nil then enabled = true end
 			if not enabled then return end
-	
 			local key = (nameLabel and nameLabel.Text) or item.Name
 			itemClicked:Fire(item, key)
 		end)
-	
 		setIdle()
 	end
-	
 	for _, child in ipairs(scroll:GetChildren()) do
-		if child:IsA("Frame") and child.Name == "Function" then
-			bindFunctionItem(child)
-		end
+		if child:IsA("Frame") and child.Name == "Function" then bindFunctionItem(child) end
 	end
-	
 	scroll.ChildAdded:Connect(function(child)
 		if child:IsA("Frame") and child.Name == "Function" then
-			task.defer(function()
-				if child.Parent then
-					bindFunctionItem(child)
-				end
-			end)
+			task.defer(function() if child.Parent then bindFunctionItem(child) end end)
 		end
 	end)
 end
 
--- Initialize all scripts
 setupCloseButton()
 setupToggle()
 setupScrollingFrame()
 
--- Create Toggle UI Button
 local ToggleUi = Instance.new("Frame")
 local Background = Instance.new("ImageLabel")
 local Holder = Instance.new("ImageLabel")
@@ -712,14 +551,14 @@ ToggleUi.Size = UDim2.new(0.0520833321, 0, 0.101019464, 0)
 Background.Name = "Background"
 Background.Parent = ToggleUi
 Background.AnchorPoint = Vector2.new(0.5, 0.5)
-Background.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-Background.BackgroundTransparency = 1.000
+Background.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+Background.BackgroundTransparency = 0.000
 Background.BorderColor3 = Color3.fromRGB(0, 0, 0)
 Background.BorderSizePixel = 0
 Background.Position = UDim2.new(0.5, 0, 0.5, 0)
 Background.Size = UDim2.new(0.885714293, 0, 0.789473712, 0)
 Background.Image = "rbxassetid://102402560329013"
-Background.ImageTransparency = 0.170
+Background.ImageTransparency = 0.000
 
 Holder.Name = "Holder"
 Holder.Parent = ToggleUi
@@ -777,11 +616,9 @@ UIAspectRatioConstraint.AspectRatio = 0.917
 
 UIScale.Parent = ToggleUi
 
--- Setup Toggle UI Button functionality
 local function setupToggleUiButton()
 	local UserInputService = game:GetService("UserInputService")
-	
-	-- Make it clickable
+	local TweenService = game:GetService("TweenService")
 	local clickDetector = Instance.new("TextButton")
 	clickDetector.Name = "ClickDetector"
 	clickDetector.Parent = ToggleUi
@@ -789,14 +626,10 @@ local function setupToggleUiButton()
 	clickDetector.Size = UDim2.new(1, 0, 1, 0)
 	clickDetector.Text = ""
 	clickDetector.ZIndex = 10
-	
-	-- Click to toggle
 	clickDetector.Activated:Connect(function()
 		Canvas.Visible = not Canvas.Visible
 		Title.Text = Canvas.Visible and "Close Ui" or "Open Ui"
 	end)
-	
-	-- Keybind support (Alt key)
 	UserInputService.InputBegan:Connect(function(input, gameProcessed)
 		if gameProcessed then return end
 		if input.KeyCode == Enum.KeyCode.LeftAlt or input.KeyCode == Enum.KeyCode.RightAlt then
@@ -804,11 +637,69 @@ local function setupToggleUiButton()
 			Title.Text = Canvas.Visible and "Close Ui" or "Open Ui"
 		end
 	end)
+	local dragging = false
+	local dragInput, dragStart, startPos
+	local function update(input)
+		local delta = input.Position - dragStart
+		local newPos = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+		TweenService:Create(ToggleUi, TweenInfo.new(0.1), {Position = newPos}):Play()
+	end
+	ToggleUi.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			dragging = true
+			dragStart = input.Position
+			startPos = ToggleUi.Position
+			input.Changed:Connect(function()
+				if input.UserInputState == Enum.UserInputState.End then dragging = false end
+			end)
+		end
+	end)
+	ToggleUi.InputChanged:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then dragInput = input end
+	end)
+	UserInputService.InputChanged:Connect(function(input)
+		if input == dragInput and dragging then update(input) end
+	end)
+end
+
+local function setupMainUiDrag()
+	local UserInputService = game:GetService("UserInputService")
+	local TweenService = game:GetService("TweenService")
+	local dragging = false
+	local dragInput, dragStart, startPos
+	local function update(input)
+		local delta = input.Position - dragStart
+		local newPos = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+		TweenService:Create(Main, TweenInfo.new(0.1), {Position = newPos}):Play()
+	end
+	local dragArea = Instance.new("Frame")
+	dragArea.Name = "DragArea"
+	dragArea.Parent = Main
+	dragArea.BackgroundTransparency = 1
+	dragArea.Position = UDim2.new(0, 0, 0, 0)
+	dragArea.Size = UDim2.new(1, 0, 0.15, 0)
+	dragArea.ZIndex = 3
+	dragArea.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			dragging = true
+			dragStart = input.Position
+			startPos = Main.Position
+			input.Changed:Connect(function()
+				if input.UserInputState == Enum.UserInputState.End then dragging = false end
+			end)
+		end
+	end)
+	dragArea.InputChanged:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then dragInput = input end
+	end)
+	UserInputService.InputChanged:Connect(function(input)
+		if input == dragInput and dragging then update(input) end
+	end)
 end
 
 setupToggleUiButton()
+setupMainUiDrag()
 
--- API for creating items
 local Library = {}
 
 function Library:CreateFunction(name, callback)
@@ -816,12 +707,8 @@ function Library:CreateFunction(name, callback)
 	newItem.Name = "Function"
 	newItem.Visible = true
 	newItem.Parent = ScrollingFrame
-	
 	local nameLabel = newItem:FindFirstChild("NameFunction")
-	if nameLabel then
-		nameLabel.Text = name
-	end
-	
+	if nameLabel then nameLabel.Text = name end
 	local itemClicked = ScrollingFrame:FindFirstChild("ItemClicked")
 	if itemClicked and callback then
 		local connection
@@ -829,13 +716,10 @@ function Library:CreateFunction(name, callback)
 			if item == newItem and key == name then
 				local enabled = item:GetAttribute("Enabled")
 				if enabled == nil then enabled = true end
-				if enabled then
-					pcall(callback)
-				end
+				if enabled then pcall(callback) end
 			end
 		end)
 	end
-	
 	return newItem
 end
 
@@ -855,5 +739,4 @@ function Library:Destroy()
 	UILib:Destroy()
 end
 
--- Return the Library table
 return Library
