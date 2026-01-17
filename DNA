@@ -706,7 +706,7 @@ function Library:CreateFunction(name, callback)
 				local enabled = item:GetAttribute("Enabled")
 				if enabled == nil then enabled = true end
 				if enabled then
-					callback()
+					pcall(callback)
 				end
 			end
 		end)
@@ -727,4 +727,9 @@ function Library:Hide()
 	UILib.Enabled = false
 end
 
+function Library:Destroy()
+	UILib:Destroy()
+end
+
+-- Return the Library table
 return Library
