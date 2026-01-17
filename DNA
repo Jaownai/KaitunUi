@@ -220,7 +220,7 @@ ScrollingFrame.ScrollBarThickness = 0
 UIListLayout.Parent = ScrollingFrame
 UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-UIListLayout.Padding = UDim.new(0, 8)
+UIListLayout.Padding = UDim.new(0, 5)
 
 -- Create item template (hidden)
 local FunctionTemplate = Instance.new("Frame")
@@ -230,7 +230,7 @@ FunctionTemplate.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 FunctionTemplate.BackgroundTransparency = 1.000
 FunctionTemplate.BorderColor3 = Color3.fromRGB(0, 0, 0)
 FunctionTemplate.BorderSizePixel = 0
-FunctionTemplate.Size = UDim2.new(0.932384133, 0, 0.08, 0)
+FunctionTemplate.Size = UDim2.new(0.932, 0, 0.038, 0)
 FunctionTemplate.Visible = false
 FunctionTemplate.Parent = ScrollingFrame
 
@@ -261,7 +261,7 @@ Outline.Image = "rbxassetid://75821963384135"
 
 local UIAspectRatioConstraint_3 = Instance.new("UIAspectRatioConstraint")
 UIAspectRatioConstraint_3.Parent = FunctionTemplate
-UIAspectRatioConstraint_3.AspectRatio = 4.5
+UIAspectRatioConstraint_3.AspectRatio = 4.226
 
 local NameFunction = Instance.new("TextLabel")
 NameFunction.Name = "NameFunction"
@@ -272,17 +272,17 @@ NameFunction.BackgroundTransparency = 1.000
 NameFunction.BorderColor3 = Color3.fromRGB(0, 0, 0)
 NameFunction.BorderSizePixel = 0
 NameFunction.Position = UDim2.new(0.500000119, 0, 0.50000006, 0)
-NameFunction.Size = UDim2.new(1.00000024, 0, 0.6, 0)
+NameFunction.Size = UDim2.new(1.00000024, 0, 0.403225839, 0)
 NameFunction.Font = Enum.Font.Merriweather
 NameFunction.TextColor3 = Color3.fromRGB(255, 255, 255)
 NameFunction.TextScaled = true
-NameFunction.TextSize = 18.000
+NameFunction.TextSize = 14.000
 NameFunction.TextStrokeTransparency = 0.500
 NameFunction.TextWrapped = true
 
 local UITextSizeConstraint_2 = Instance.new("UITextSizeConstraint")
 UITextSizeConstraint_2.Parent = NameFunction
-UITextSizeConstraint_2.MaxTextSize = 18
+UITextSizeConstraint_2.MaxTextSize = 14
 
 local Hitbox = Instance.new("ImageButton")
 Hitbox.Name = "Hitbox"
