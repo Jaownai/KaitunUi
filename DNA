@@ -1,9 +1,11 @@
 -- UI Library v1.0
--- Enhanced version with full functionality
+-- Enhanced version with full functionality matching original 100%
 
 local UILib = Instance.new("ScreenGui")
 local Canvas = Instance.new("Frame")
 local Main = Instance.new("Frame")
+local Background = Instance.new("ImageLabel")
+local InnerOutline = Instance.new("ImageLabel")
 local Close = Instance.new("ImageLabel")
 local Sprite = Instance.new("ImageLabel")
 local InnerSprite = Instance.new("ImageLabel")
@@ -13,8 +15,6 @@ local UIGradient = Instance.new("UIGradient")
 local UIScale = Instance.new("UIScale")
 local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
 local UIScale_2 = Instance.new("UIScale")
-local Background = Instance.new("ImageLabel")
-local InnerOutline = Instance.new("ImageLabel")
 local OuterOutline = Instance.new("ImageLabel")
 local Toggle = Instance.new("Frame")
 local Button = Instance.new("TextButton")
@@ -25,7 +25,7 @@ local UIScale_3 = Instance.new("UIScale")
 local ScrollingFrame = Instance.new("ScrollingFrame")
 local UIListLayout = Instance.new("UIListLayout")
 
--- Properties
+-- Properties matching original exactly
 UILib.Name = "UILib"
 UILib.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 UILib.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
@@ -50,6 +50,29 @@ Main.BorderColor3 = Color3.fromRGB(0, 0, 0)
 Main.BorderSizePixel = 0
 Main.Position = UDim2.new(0.5, 0, 0.5, 0)
 Main.Size = UDim2.new(0.258188814, 0, 0.505025148, 0)
+
+Background.Name = "Background"
+Background.Parent = Main
+Background.AnchorPoint = Vector2.new(0.5, 0.5)
+Background.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Background.BackgroundTransparency = 1.000
+Background.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Background.BorderSizePixel = 0
+Background.Position = UDim2.new(0.5, 0, 0.5, 0)
+Background.Size = UDim2.new(1.05472648, 0, 1.05472624, 0)
+Background.ZIndex = 0
+Background.Image = "rbxassetid://99171728777958"
+
+InnerOutline.Name = "InnerOutline"
+InnerOutline.Parent = Main
+InnerOutline.AnchorPoint = Vector2.new(0.5, 0.5)
+InnerOutline.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+InnerOutline.BackgroundTransparency = 1.000
+InnerOutline.BorderColor3 = Color3.fromRGB(0, 0, 0)
+InnerOutline.BorderSizePixel = 0
+InnerOutline.Position = UDim2.new(0.5, 0, 0.5, 0)
+InnerOutline.Size = UDim2.new(0.965174198, 0, 0.965174079, 0)
+InnerOutline.Image = "rbxassetid://126754869240012"
 
 Close.Name = "Close"
 Close.Parent = Main
@@ -122,29 +145,6 @@ UIScale.Parent = Icon
 UIAspectRatioConstraint.Parent = Close
 
 UIScale_2.Parent = Close
-
-Background.Name = "Background"
-Background.Parent = Main
-Background.AnchorPoint = Vector2.new(0.5, 0.5)
-Background.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-Background.BackgroundTransparency = 1.000
-Background.BorderColor3 = Color3.fromRGB(0, 0, 0)
-Background.BorderSizePixel = 0
-Background.Position = UDim2.new(0.5, 0, 0.5, 0)
-Background.Size = UDim2.new(1.05472648, 0, 1.05472624, 0)
-Background.ZIndex = 0
-Background.Image = "rbxassetid://99171728777958"
-
-InnerOutline.Name = "InnerOutline"
-InnerOutline.Parent = Main
-InnerOutline.AnchorPoint = Vector2.new(0.5, 0.5)
-InnerOutline.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-InnerOutline.BackgroundTransparency = 1.000
-InnerOutline.BorderColor3 = Color3.fromRGB(0, 0, 0)
-InnerOutline.BorderSizePixel = 0
-InnerOutline.Position = UDim2.new(0.5, 0, 0.5, 0)
-InnerOutline.Size = UDim2.new(0.965174198, 0, 0.965174079, 0)
-InnerOutline.Image = "rbxassetid://126754869240012"
 
 OuterOutline.Name = "OuterOutline"
 OuterOutline.Parent = Main
@@ -220,9 +220,8 @@ ScrollingFrame.ScrollBarThickness = 0
 UIListLayout.Parent = ScrollingFrame
 UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-UIListLayout.Padding = UDim.new(0, 5)
 
--- Create item template (hidden)
+-- Create Function Template (matches original exactly)
 local FunctionTemplate = Instance.new("Frame")
 FunctionTemplate.Name = "FunctionTemplate"
 FunctionTemplate.AnchorPoint = Vector2.new(0.5, 0.5)
@@ -230,7 +229,8 @@ FunctionTemplate.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 FunctionTemplate.BackgroundTransparency = 1.000
 FunctionTemplate.BorderColor3 = Color3.fromRGB(0, 0, 0)
 FunctionTemplate.BorderSizePixel = 0
-FunctionTemplate.Size = UDim2.new(0.932, 0, 0.038, 0)
+FunctionTemplate.Position = UDim2.new(0.5, 0, 0.5, 0)
+FunctionTemplate.Size = UDim2.new(0.932384133, 0, 0.0376121812, 0)
 FunctionTemplate.Visible = false
 FunctionTemplate.Parent = ScrollingFrame
 
@@ -282,7 +282,7 @@ NameFunction.TextWrapped = true
 
 local UITextSizeConstraint_2 = Instance.new("UITextSizeConstraint")
 UITextSizeConstraint_2.Parent = NameFunction
-UITextSizeConstraint_2.MaxTextSize = 14
+UITextSizeConstraint_2.MaxTextSize = 24
 
 local Hitbox = Instance.new("ImageButton")
 Hitbox.Name = "Hitbox"
@@ -319,13 +319,25 @@ local function setupCloseButton()
 	local iconHoverColor = Color3.fromRGB(255, 14, 70)
 	
 	local spriteFrames = {
-		Vector2.new(0, 256), Vector2.new(256, 256), Vector2.new(512, 256), Vector2.new(768, 256),
-		Vector2.new(0, 0), Vector2.new(256, 0), Vector2.new(512, 0), Vector2.new(768, 0),
+		Vector2.new(0, 256),
+		Vector2.new(256, 256),
+		Vector2.new(512, 256),
+		Vector2.new(768, 256),
+		Vector2.new(0, 0),
+		Vector2.new(256, 0),
+		Vector2.new(512, 0),
+		Vector2.new(768, 0),
 	}
 	
 	local innerFrames = {
-		Vector2.new(0, 768), Vector2.new(256, 768), Vector2.new(512, 768), Vector2.new(768, 768),
-		Vector2.new(0, 512), Vector2.new(256, 512), Vector2.new(512, 512), Vector2.new(768, 512),
+		Vector2.new(0, 768),
+		Vector2.new(256, 768),
+		Vector2.new(512, 768),
+		Vector2.new(768, 768),
+		Vector2.new(0, 512),
+		Vector2.new(256, 512),
+		Vector2.new(512, 512),
+		Vector2.new(768, 512),
 	}
 	
 	local BASE_SPEED = 0.05
@@ -337,7 +349,9 @@ local function setupCloseButton()
 			sprite.ImageRectOffset = spriteFrames[index]
 			inner.ImageRectOffset = innerFrames[index]
 			index += 1
-			if index > #spriteFrames then index = 1 end
+			if index > #spriteFrames then
+				index = 1
+			end
 			task.wait(speed)
 		end
 	end)
@@ -350,7 +364,11 @@ local function setupCloseButton()
 	local tScale
 	
 	local function tween(obj, props, time)
-		return TweenService:Create(obj, TweenInfo.new(time, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), props)
+		return TweenService:Create(
+			obj,
+			TweenInfo.new(time, Enum.EasingStyle.Sine, Enum.EasingDirection.Out),
+			props
+		)
 	end
 	
 	local function setIdle()
@@ -358,9 +376,11 @@ local function setupCloseButton()
 		if tScale then tScale:Cancel() end
 		tScale = tween(closeScale, { Scale = 1 }, 0.18)
 		tScale:Play()
+	
 		tween(sprite, { ImageColor3 = spriteDefaultColor }, 0.2):Play()
 		tween(inner, { ImageColor3 = innerDefaultColor }, 0.2):Play()
 		tween(icon, { ImageColor3 = iconDefaultColor }, 0.2):Play()
+	
 		speed = BASE_SPEED
 	end
 	
@@ -369,6 +389,7 @@ local function setupCloseButton()
 		if tScale then tScale:Cancel() end
 		tScale = tween(closeScale, { Scale = 1.06 }, 0.2)
 		tScale:Play()
+	
 		tween(sprite, { ImageColor3 = spriteHoverColor }, 0.2):Play()
 		tween(inner, { ImageColor3 = innerHoverColor }, 0.2):Play()
 		tween(icon, { ImageColor3 = iconHoverColor }, 0.2):Play()
@@ -383,7 +404,11 @@ local function setupCloseButton()
 	
 	local function setUp()
 		pressed = false
-		if hovering then setHover() else setIdle() end
+		if hovering then
+			setHover()
+		else
+			setIdle()
+		end
 	end
 	
 	close.MouseEnter:Connect(function()
@@ -397,13 +422,15 @@ local function setupCloseButton()
 	end)
 	
 	close.InputBegan:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+		if input.UserInputType == Enum.UserInputType.MouseButton1
+			or input.UserInputType == Enum.UserInputType.Touch then
 			setDown()
 		end
 	end)
 	
 	close.InputEnded:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+		if input.UserInputType == Enum.UserInputType.MouseButton1
+			or input.UserInputType == Enum.UserInputType.Touch then
 			setUp()
 			-- CLOSE THE UI
 			UILib.Enabled = false
@@ -454,11 +481,11 @@ local function setupToggle()
 			warn("[Toggle] No selected item")
 			return
 		end
-		
+	
 		local enabled = getEnabled(item)
 		enabled = not enabled
 		item:SetAttribute("Enabled", enabled)
-		
+	
 		setButtonText(item)
 	end)
 	
@@ -506,6 +533,7 @@ local function setupScrollingFrame()
 	
 	local SELECT_BG = Color3.fromRGB(129, 35, 36)
 	local SELECT_OUT = Color3.fromRGB(209, 57, 59)
+	
 	local DISABLED_BG = Color3.fromRGB(60, 60, 60)
 	local DISABLED_OUT = Color3.fromRGB(110, 110, 110)
 	
@@ -515,10 +543,10 @@ local function setupScrollingFrame()
 	local function applySelected(item)
 		local bg = item:FindFirstChild("Background")
 		local outline = item:FindFirstChild("Outline")
-		
+	
 		local enabled = item:GetAttribute("Enabled")
 		if enabled == nil then enabled = true end
-		
+	
 		if enabled then
 			if bg then tween(bg, { ImageColor3 = SELECT_BG }, 0.18):Play() end
 			if outline then tween(outline, { ImageColor3 = SELECT_OUT }, 0.18):Play() end
@@ -542,22 +570,22 @@ local function setupScrollingFrame()
 		local bg = item:FindFirstChild("Background")
 		local outline = item:FindFirstChild("Outline")
 		local nameLabel = item:FindFirstChild("NameFunction")
-		
+	
 		if item:GetAttribute("Enabled") == nil then
 			item:SetAttribute("Enabled", true)
 		end
-		
+	
 		local bgDefault = bg and bg.ImageColor3 or nil
 		local outDefault = outline and outline.ImageColor3 or nil
-		
+	
 		local hoverBlack = 0.10
 		local hovering = false
 		local pressed = false
-		
+	
 		local scale = getScale(hitbox)
 		scale.Scale = 1
 		local tScale
-		
+	
 		local function setIdle()
 			if pressed then return end
 			if item == selectedItem then return end
@@ -567,7 +595,7 @@ local function setupScrollingFrame()
 			if bg and bgDefault then tween(bg, { ImageColor3 = bgDefault }, 0.16):Play() end
 			if outline and outDefault then tween(outline, { ImageColor3 = outDefault }, 0.16):Play() end
 		end
-		
+	
 		local function setHover()
 			if pressed then return end
 			if item == selectedItem then return end
@@ -577,13 +605,13 @@ local function setupScrollingFrame()
 			if bg and bgDefault then tween(bg, { ImageColor3 = mixToBlack(bgDefault, hoverBlack) }, 0.16):Play() end
 			if outline and outDefault then tween(outline, { ImageColor3 = mixToBlack(outDefault, 0.06) }, 0.16):Play() end
 		end
-		
+	
 		local function setDownVisual()
 			if tScale then tScale:Cancel() end
 			tScale = tween(scale, { Scale = 0.985 }, 0.18)
 			tScale:Play()
 		end
-		
+	
 		local function chooseThis()
 			if selectedItem and selectedItem ~= item then
 				restoreDefaults(selectedItem, selectedDefaults)
@@ -593,33 +621,33 @@ local function setupScrollingFrame()
 			selectedItemValue.Value = item
 			applySelected(item)
 		end
-		
+	
 		item:GetAttributeChangedSignal("Enabled"):Connect(function()
 			if item == selectedItem then
 				applySelected(item)
 			end
 		end)
-		
+	
 		hitbox.Active = true
 		hitbox.Selectable = true
-		
+	
 		hitbox.MouseEnter:Connect(function()
 			hovering = true
 			setHover()
 		end)
-		
+	
 		hitbox.MouseLeave:Connect(function()
 			hovering = false
 			setIdle()
 		end)
-		
+	
 		hitbox.InputBegan:Connect(function(input)
 			if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 				pressed = true
 				setDownVisual()
 			end
 		end)
-		
+	
 		hitbox.InputEnded:Connect(function(input)
 			if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 				pressed = false
@@ -638,18 +666,18 @@ local function setupScrollingFrame()
 				end
 			end
 		end)
-		
+	
 		hitbox.Activated:Connect(function()
 			chooseThis()
-			
+	
 			local enabled = item:GetAttribute("Enabled")
 			if enabled == nil then enabled = true end
 			if not enabled then return end
-			
+	
 			local key = (nameLabel and nameLabel.Text) or item.Name
 			itemClicked:Fire(item, key)
 		end)
-		
+	
 		setIdle()
 	end
 	
