@@ -688,6 +688,126 @@ setupCloseButton()
 setupToggle()
 setupScrollingFrame()
 
+-- Create Toggle UI Button
+local ToggleUi = Instance.new("Frame")
+local Background = Instance.new("ImageLabel")
+local Holder = Instance.new("ImageLabel")
+local Keybind = Instance.new("TextLabel")
+local UITextSizeConstraint = Instance.new("UITextSizeConstraint")
+local Title = Instance.new("TextLabel")
+local UITextSizeConstraint_2 = Instance.new("UITextSizeConstraint")
+local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
+local UIScale = Instance.new("UIScale")
+
+ToggleUi.Name = "ToggleUi"
+ToggleUi.Parent = UILib
+ToggleUi.AnchorPoint = Vector2.new(0.5, 0.5)
+ToggleUi.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+ToggleUi.BackgroundTransparency = 1.000
+ToggleUi.BorderColor3 = Color3.fromRGB(0, 0, 0)
+ToggleUi.BorderSizePixel = 0
+ToggleUi.Position = UDim2.new(0.134375006, 0, 0.701356769, 0)
+ToggleUi.Size = UDim2.new(0.0520833321, 0, 0.101019464, 0)
+
+Background.Name = "Background"
+Background.Parent = ToggleUi
+Background.AnchorPoint = Vector2.new(0.5, 0.5)
+Background.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Background.BackgroundTransparency = 1.000
+Background.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Background.BorderSizePixel = 0
+Background.Position = UDim2.new(0.5, 0, 0.5, 0)
+Background.Size = UDim2.new(0.885714293, 0, 0.789473712, 0)
+Background.Image = "rbxassetid://102402560329013"
+Background.ImageTransparency = 0.170
+
+Holder.Name = "Holder"
+Holder.Parent = ToggleUi
+Holder.AnchorPoint = Vector2.new(0.5, 0.5)
+Holder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Holder.BackgroundTransparency = 1.000
+Holder.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Holder.BorderSizePixel = 0
+Holder.Position = UDim2.new(0.5, 0, 0.5, 0)
+Holder.Size = UDim2.new(1, 0, 1, 0)
+Holder.Image = "rbxassetid://120491136004951"
+
+Keybind.Name = "Keybind"
+Keybind.Parent = ToggleUi
+Keybind.AnchorPoint = Vector2.new(0.5, 0.5)
+Keybind.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Keybind.BackgroundTransparency = 1.000
+Keybind.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Keybind.BorderSizePixel = 0
+Keybind.Position = UDim2.new(0.49000001, 0, 0.091742903, 0)
+Keybind.Size = UDim2.new(1, 0, 0.200000018, 0)
+Keybind.Font = Enum.Font.Merriweather
+Keybind.Text = "Alt"
+Keybind.TextColor3 = Color3.fromRGB(255, 255, 255)
+Keybind.TextScaled = true
+Keybind.TextSize = 14.000
+Keybind.TextWrapped = true
+
+UITextSizeConstraint.Parent = Keybind
+UITextSizeConstraint.MaxTextSize = 15
+
+Title.Name = "Title"
+Title.Parent = ToggleUi
+Title.AnchorPoint = Vector2.new(0.5, 0.5)
+Title.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Title.BackgroundTransparency = 1.000
+Title.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Title.BorderSizePixel = 0
+Title.Position = UDim2.new(0.5, 0, 0.5, 0)
+Title.Size = UDim2.new(0.75000006, 0, 0.600000024, 0)
+Title.Font = Enum.Font.Merriweather
+Title.Text = "Open Ui"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.TextScaled = true
+Title.TextSize = 14.000
+Title.TextStrokeTransparency = 0.500
+Title.TextWrapped = true
+
+UITextSizeConstraint_2.Parent = Title
+UITextSizeConstraint_2.MaxTextSize = 20
+UITextSizeConstraint_2.MinTextSize = 9
+
+UIAspectRatioConstraint.Parent = ToggleUi
+UIAspectRatioConstraint.AspectRatio = 0.917
+
+UIScale.Parent = ToggleUi
+
+-- Setup Toggle UI Button functionality
+local function setupToggleUiButton()
+	local UserInputService = game:GetService("UserInputService")
+	
+	-- Make it clickable
+	local clickDetector = Instance.new("TextButton")
+	clickDetector.Name = "ClickDetector"
+	clickDetector.Parent = ToggleUi
+	clickDetector.BackgroundTransparency = 1
+	clickDetector.Size = UDim2.new(1, 0, 1, 0)
+	clickDetector.Text = ""
+	clickDetector.ZIndex = 10
+	
+	-- Click to toggle
+	clickDetector.Activated:Connect(function()
+		Canvas.Visible = not Canvas.Visible
+		Title.Text = Canvas.Visible and "Close Ui" or "Open Ui"
+	end)
+	
+	-- Keybind support (Alt key)
+	UserInputService.InputBegan:Connect(function(input, gameProcessed)
+		if gameProcessed then return end
+		if input.KeyCode == Enum.KeyCode.LeftAlt or input.KeyCode == Enum.KeyCode.RightAlt then
+			Canvas.Visible = not Canvas.Visible
+			Title.Text = Canvas.Visible and "Close Ui" or "Open Ui"
+		end
+	end)
+end
+
+setupToggleUiButton()
+
 -- API for creating items
 local Library = {}
 
