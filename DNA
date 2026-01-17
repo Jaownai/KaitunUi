@@ -360,7 +360,7 @@ local function setupCloseButton()
 		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then setDown() end
 	end)
 	close.InputEnded:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then setUp() UILib.Enabled = false end
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then setUp() Canvas.Visible = false end
 	end)
 end
 
