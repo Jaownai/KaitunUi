@@ -1,0 +1,730 @@
+-- UI Library v1.0
+-- Enhanced version with full functionality
+
+local UILib = Instance.new("ScreenGui")
+local Canvas = Instance.new("Frame")
+local Main = Instance.new("Frame")
+local Close = Instance.new("ImageLabel")
+local Sprite = Instance.new("ImageLabel")
+local InnerSprite = Instance.new("ImageLabel")
+local Icon = Instance.new("ImageLabel")
+local X = Instance.new("ImageLabel")
+local UIGradient = Instance.new("UIGradient")
+local UIScale = Instance.new("UIScale")
+local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
+local UIScale_2 = Instance.new("UIScale")
+local Background = Instance.new("ImageLabel")
+local InnerOutline = Instance.new("ImageLabel")
+local OuterOutline = Instance.new("ImageLabel")
+local Toggle = Instance.new("Frame")
+local Button = Instance.new("TextButton")
+local UITextSizeConstraint = Instance.new("UITextSizeConstraint")
+local ImageLabel = Instance.new("ImageLabel")
+local UIAspectRatioConstraint_2 = Instance.new("UIAspectRatioConstraint")
+local UIScale_3 = Instance.new("UIScale")
+local ScrollingFrame = Instance.new("ScrollingFrame")
+local UIListLayout = Instance.new("UIListLayout")
+
+-- Properties
+UILib.Name = "UILib"
+UILib.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+UILib.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+UILib.ResetOnSpawn = false
+
+Canvas.Name = "Canvas"
+Canvas.Parent = UILib
+Canvas.AnchorPoint = Vector2.new(0.5, 0.5)
+Canvas.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Canvas.BackgroundTransparency = 1.000
+Canvas.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Canvas.BorderSizePixel = 0
+Canvas.Position = UDim2.new(0.5, 0, 0.5, 0)
+Canvas.Size = UDim2.new(1, 0, 1, 0)
+
+Main.Name = "Main"
+Main.Parent = Canvas
+Main.AnchorPoint = Vector2.new(0.5, 0.5)
+Main.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Main.BackgroundTransparency = 1.000
+Main.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Main.BorderSizePixel = 0
+Main.Position = UDim2.new(0.5, 0, 0.5, 0)
+Main.Size = UDim2.new(0.258188814, 0, 0.505025148, 0)
+
+Close.Name = "Close"
+Close.Parent = Main
+Close.AnchorPoint = Vector2.new(0.5, 0.5)
+Close.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Close.BackgroundTransparency = 1.000
+Close.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Close.BorderSizePixel = 0
+Close.Position = UDim2.new(0.957788825, 0, 0.0338004977, 0)
+Close.Size = UDim2.new(0.166156068, 0, 0.122327141, 0)
+Close.ZIndex = 4
+
+Sprite.Name = "Sprite"
+Sprite.Parent = Close
+Sprite.AnchorPoint = Vector2.new(0.5, 0.5)
+Sprite.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Sprite.BackgroundTransparency = 1.000
+Sprite.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Sprite.BorderSizePixel = 0
+Sprite.Position = UDim2.new(0.5, 0, 0.5, 0)
+Sprite.Size = UDim2.new(1.55036259, 0, 1.55036175, 0)
+Sprite.Image = "rbxassetid://104730836539804"
+Sprite.ImageColor3 = Color3.fromRGB(94, 94, 94)
+Sprite.ImageRectSize = Vector2.new(256, 256)
+
+InnerSprite.Name = "InnerSprite"
+InnerSprite.Parent = Sprite
+InnerSprite.AnchorPoint = Vector2.new(0.5, 0.5)
+InnerSprite.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+InnerSprite.BackgroundTransparency = 1.000
+InnerSprite.BorderColor3 = Color3.fromRGB(0, 0, 0)
+InnerSprite.BorderSizePixel = 0
+InnerSprite.Position = UDim2.new(0.5, 0, 0.5, 0)
+InnerSprite.Size = UDim2.new(0.905398548, 0, 0.905398428, 0)
+InnerSprite.Image = "rbxassetid://104730836539804"
+InnerSprite.ImageRectSize = Vector2.new(256, 256)
+
+Icon.Name = "Icon"
+Icon.Parent = Close
+Icon.AnchorPoint = Vector2.new(0.5, 0.5)
+Icon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Icon.BackgroundTransparency = 1.000
+Icon.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Icon.BorderSizePixel = 0
+Icon.Position = UDim2.new(0.48525551, 0, 0.683529079, 0)
+Icon.Size = UDim2.new(0.829999983, 0, 0.829999983, 0)
+Icon.Image = "rbxassetid://103249289662615"
+Icon.ImageRectSize = Vector2.new(294, 291)
+Icon.ScaleType = Enum.ScaleType.Tile
+
+X.Name = "X"
+X.Parent = Icon
+X.AnchorPoint = Vector2.new(0.5, 0.5)
+X.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+X.BackgroundTransparency = 1.000
+X.BorderColor3 = Color3.fromRGB(0, 0, 0)
+X.BorderSizePixel = 0
+X.Position = UDim2.new(0.5, 0, 0.5, 0)
+X.Size = UDim2.new(1, 0, 1, 0)
+X.Image = "rbxassetid://103249289662615"
+X.ImageRectOffset = Vector2.new(294, 0)
+X.ImageRectSize = Vector2.new(294, 291)
+X.ScaleType = Enum.ScaleType.Tile
+
+UIGradient.Transparency = NumberSequence.new{NumberSequenceKeypoint.new(0.00, 0.00), NumberSequenceKeypoint.new(0.14, 0.00), NumberSequenceKeypoint.new(0.31, 0.00), NumberSequenceKeypoint.new(0.41, 0.10), NumberSequenceKeypoint.new(0.45, 0.00), NumberSequenceKeypoint.new(0.53, 0.00), NumberSequenceKeypoint.new(0.59, 0.10), NumberSequenceKeypoint.new(0.66, 0.00), NumberSequenceKeypoint.new(1.00, 0.00)}
+UIGradient.Parent = X
+
+UIScale.Parent = Icon
+
+UIAspectRatioConstraint.Parent = Close
+
+UIScale_2.Parent = Close
+
+Background.Name = "Background"
+Background.Parent = Main
+Background.AnchorPoint = Vector2.new(0.5, 0.5)
+Background.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Background.BackgroundTransparency = 1.000
+Background.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Background.BorderSizePixel = 0
+Background.Position = UDim2.new(0.5, 0, 0.5, 0)
+Background.Size = UDim2.new(1.05472648, 0, 1.05472624, 0)
+Background.ZIndex = 0
+Background.Image = "rbxassetid://99171728777958"
+
+InnerOutline.Name = "InnerOutline"
+InnerOutline.Parent = Main
+InnerOutline.AnchorPoint = Vector2.new(0.5, 0.5)
+InnerOutline.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+InnerOutline.BackgroundTransparency = 1.000
+InnerOutline.BorderColor3 = Color3.fromRGB(0, 0, 0)
+InnerOutline.BorderSizePixel = 0
+InnerOutline.Position = UDim2.new(0.5, 0, 0.5, 0)
+InnerOutline.Size = UDim2.new(0.965174198, 0, 0.965174079, 0)
+InnerOutline.Image = "rbxassetid://126754869240012"
+
+OuterOutline.Name = "OuterOutline"
+OuterOutline.Parent = Main
+OuterOutline.AnchorPoint = Vector2.new(0.5, 0.5)
+OuterOutline.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+OuterOutline.BackgroundTransparency = 1.000
+OuterOutline.BorderColor3 = Color3.fromRGB(0, 0, 0)
+OuterOutline.BorderSizePixel = 0
+OuterOutline.Position = UDim2.new(0.5, 0, 0.5, 0)
+OuterOutline.Size = UDim2.new(1, 0, 1, 0)
+OuterOutline.ZIndex = 2
+OuterOutline.Image = "rbxassetid://82133971779661"
+
+Toggle.Name = "Toggle"
+Toggle.Parent = Main
+Toggle.AnchorPoint = Vector2.new(0.5, 0.5)
+Toggle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Toggle.BackgroundTransparency = 1.000
+Toggle.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Toggle.BorderSizePixel = 0
+Toggle.Position = UDim2.new(0.5, 0, 0.873695254, 0)
+Toggle.Size = UDim2.new(0.218905494, 0, 0.0671641752, 0)
+Toggle.ZIndex = 2
+
+Button.Name = "Button"
+Button.Parent = Toggle
+Button.AnchorPoint = Vector2.new(0.5, 0.5)
+Button.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Button.BackgroundTransparency = 1.000
+Button.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Button.BorderSizePixel = 0
+Button.Position = UDim2.new(0.5, 0, 0.5, 0)
+Button.Size = UDim2.new(1.02272725, 0, 0.560094237, 0)
+Button.Font = Enum.Font.Merriweather
+Button.Text = "ON"
+Button.TextColor3 = Color3.fromRGB(255, 240, 165)
+Button.TextScaled = true
+Button.TextSize = 14.000
+Button.TextWrapped = true
+
+UITextSizeConstraint.Parent = Button
+UITextSizeConstraint.MaxTextSize = 14
+
+ImageLabel.Parent = Toggle
+ImageLabel.AnchorPoint = Vector2.new(0.5, 0.5)
+ImageLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+ImageLabel.BackgroundTransparency = 1.000
+ImageLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
+ImageLabel.BorderSizePixel = 0
+ImageLabel.Position = UDim2.new(0.5, 0, 0.5, 0)
+ImageLabel.Size = UDim2.new(1, 0, 1, 0)
+ImageLabel.ZIndex = 0
+ImageLabel.Image = "rbxassetid://94450235473527"
+
+UIAspectRatioConstraint_2.Parent = Main
+UIAspectRatioConstraint_2.AspectRatio = 0.806
+
+UIScale_3.Parent = Main
+
+ScrollingFrame.Parent = Main
+ScrollingFrame.Active = true
+ScrollingFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+ScrollingFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+ScrollingFrame.BackgroundTransparency = 1.000
+ScrollingFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+ScrollingFrame.BorderSizePixel = 0
+ScrollingFrame.Position = UDim2.new(0.50000006, 0, 0.439335197, 0)
+ScrollingFrame.Size = UDim2.new(0.846310616, 0, 0.754670262, 0)
+ScrollingFrame.ZIndex = 4
+ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+ScrollingFrame.ScrollBarThickness = 0
+
+UIListLayout.Parent = ScrollingFrame
+UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+UIListLayout.Padding = UDim.new(0, 5)
+
+-- Create item template (hidden)
+local FunctionTemplate = Instance.new("Frame")
+FunctionTemplate.Name = "FunctionTemplate"
+FunctionTemplate.AnchorPoint = Vector2.new(0.5, 0.5)
+FunctionTemplate.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+FunctionTemplate.BackgroundTransparency = 1.000
+FunctionTemplate.BorderColor3 = Color3.fromRGB(0, 0, 0)
+FunctionTemplate.BorderSizePixel = 0
+FunctionTemplate.Size = UDim2.new(0.932384133, 0, 0.0376121812, 0)
+FunctionTemplate.Visible = false
+FunctionTemplate.Parent = ScrollingFrame
+
+local Background_2 = Instance.new("ImageLabel")
+Background_2.Name = "Background"
+Background_2.Parent = FunctionTemplate
+Background_2.AnchorPoint = Vector2.new(0.5, 0.5)
+Background_2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Background_2.BackgroundTransparency = 1.000
+Background_2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Background_2.BorderSizePixel = 0
+Background_2.Position = UDim2.new(0.5, 0, 0.5, 0)
+Background_2.Size = UDim2.new(0.973282456, 0, 0.943548501, 0)
+Background_2.ZIndex = 0
+Background_2.Image = "rbxassetid://129873065423921"
+
+local Outline = Instance.new("ImageLabel")
+Outline.Name = "Outline"
+Outline.Parent = FunctionTemplate
+Outline.AnchorPoint = Vector2.new(0.5, 0.5)
+Outline.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Outline.BackgroundTransparency = 1.000
+Outline.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Outline.BorderSizePixel = 0
+Outline.Position = UDim2.new(0.5, 0, 0.5, 0)
+Outline.Size = UDim2.new(1.00000024, 0, 1.00000012, 0)
+Outline.Image = "rbxassetid://75821963384135"
+
+local UIAspectRatioConstraint_3 = Instance.new("UIAspectRatioConstraint")
+UIAspectRatioConstraint_3.Parent = FunctionTemplate
+UIAspectRatioConstraint_3.AspectRatio = 4.226
+
+local NameFunction = Instance.new("TextLabel")
+NameFunction.Name = "NameFunction"
+NameFunction.Parent = FunctionTemplate
+NameFunction.AnchorPoint = Vector2.new(0.5, 0.5)
+NameFunction.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+NameFunction.BackgroundTransparency = 1.000
+NameFunction.BorderColor3 = Color3.fromRGB(0, 0, 0)
+NameFunction.BorderSizePixel = 0
+NameFunction.Position = UDim2.new(0.500000119, 0, 0.50000006, 0)
+NameFunction.Size = UDim2.new(1.00000024, 0, 0.403225839, 0)
+NameFunction.Font = Enum.Font.Merriweather
+NameFunction.TextColor3 = Color3.fromRGB(255, 255, 255)
+NameFunction.TextScaled = true
+NameFunction.TextSize = 14.000
+NameFunction.TextStrokeTransparency = 0.500
+NameFunction.TextWrapped = true
+
+local UITextSizeConstraint_2 = Instance.new("UITextSizeConstraint")
+UITextSizeConstraint_2.Parent = NameFunction
+UITextSizeConstraint_2.MaxTextSize = 14
+
+local Hitbox = Instance.new("ImageButton")
+Hitbox.Name = "Hitbox"
+Hitbox.Parent = FunctionTemplate
+Hitbox.AnchorPoint = Vector2.new(0.5, 0.5)
+Hitbox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Hitbox.BackgroundTransparency = 1.000
+Hitbox.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Hitbox.BorderSizePixel = 0
+Hitbox.Position = UDim2.new(0.5, 0, 0.5, 0)
+Hitbox.Size = UDim2.new(1, 0, 1, 0)
+Hitbox.ZIndex = 5
+
+-- SCRIPTS
+
+-- Close Button Script
+local function setupCloseButton()
+	local TweenService = game:GetService("TweenService")
+	
+	local close = Close
+	local sprite = close:WaitForChild("Sprite")
+	local inner = sprite:WaitForChild("InnerSprite")
+	local icon = close:WaitForChild("Icon")
+	
+	local closeScale = close:FindFirstChildOfClass("UIScale") or Instance.new("UIScale", close)
+	closeScale.Scale = 1
+	
+	local spriteDefaultColor = sprite.ImageColor3
+	local innerDefaultColor = inner.ImageColor3
+	local iconDefaultColor = icon.ImageColor3
+	
+	local spriteHoverColor = Color3.fromRGB(255, 17, 69)
+	local innerHoverColor = Color3.fromRGB(255, 78, 110)
+	local iconHoverColor = Color3.fromRGB(255, 14, 70)
+	
+	local spriteFrames = {
+		Vector2.new(0, 256), Vector2.new(256, 256), Vector2.new(512, 256), Vector2.new(768, 256),
+		Vector2.new(0, 0), Vector2.new(256, 0), Vector2.new(512, 0), Vector2.new(768, 0),
+	}
+	
+	local innerFrames = {
+		Vector2.new(0, 768), Vector2.new(256, 768), Vector2.new(512, 768), Vector2.new(768, 768),
+		Vector2.new(0, 512), Vector2.new(256, 512), Vector2.new(512, 512), Vector2.new(768, 512),
+	}
+	
+	local BASE_SPEED = 0.05
+	local speed = BASE_SPEED
+	local index = 1
+	
+	task.spawn(function()
+		while close.Parent do
+			sprite.ImageRectOffset = spriteFrames[index]
+			inner.ImageRectOffset = innerFrames[index]
+			index += 1
+			if index > #spriteFrames then index = 1 end
+			task.wait(speed)
+		end
+	end)
+	
+	close.Active = true
+	close.Selectable = true
+	
+	local hovering = false
+	local pressed = false
+	local tScale
+	
+	local function tween(obj, props, time)
+		return TweenService:Create(obj, TweenInfo.new(time, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), props)
+	end
+	
+	local function setIdle()
+		if pressed then return end
+		if tScale then tScale:Cancel() end
+		tScale = tween(closeScale, { Scale = 1 }, 0.18)
+		tScale:Play()
+		tween(sprite, { ImageColor3 = spriteDefaultColor }, 0.2):Play()
+		tween(inner, { ImageColor3 = innerDefaultColor }, 0.2):Play()
+		tween(icon, { ImageColor3 = iconDefaultColor }, 0.2):Play()
+		speed = BASE_SPEED
+	end
+	
+	local function setHover()
+		if pressed then return end
+		if tScale then tScale:Cancel() end
+		tScale = tween(closeScale, { Scale = 1.06 }, 0.2)
+		tScale:Play()
+		tween(sprite, { ImageColor3 = spriteHoverColor }, 0.2):Play()
+		tween(inner, { ImageColor3 = innerHoverColor }, 0.2):Play()
+		tween(icon, { ImageColor3 = iconHoverColor }, 0.2):Play()
+	end
+	
+	local function setDown()
+		pressed = true
+		if tScale then tScale:Cancel() end
+		tScale = tween(closeScale, { Scale = 0.94 }, 0.24)
+		tScale:Play()
+	end
+	
+	local function setUp()
+		pressed = false
+		if hovering then setHover() else setIdle() end
+	end
+	
+	close.MouseEnter:Connect(function()
+		hovering = true
+		setHover()
+	end)
+	
+	close.MouseLeave:Connect(function()
+		hovering = false
+		setIdle()
+	end)
+	
+	close.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			setDown()
+		end
+	end)
+	
+	close.InputEnded:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			setUp()
+			-- CLOSE THE UI
+			UILib.Enabled = false
+		end
+	end)
+end
+
+-- Toggle Button Script
+local function setupToggle()
+	local toggle = Toggle
+	local main = Main
+	local button = toggle:WaitForChild("Button")
+	local scroll = main:WaitForChild("ScrollingFrame")
+	
+	local selectedItem = scroll:FindFirstChild("SelectedItem")
+	if not selectedItem then
+		selectedItem = Instance.new("ObjectValue")
+		selectedItem.Name = "SelectedItem"
+		selectedItem.Parent = scroll
+	end
+	
+	local function getEnabled(item)
+		if not item then return nil end
+		local v = item:GetAttribute("Enabled")
+		if v == nil then v = true end
+		return v
+	end
+	
+	local function setButtonText(item)
+		local enabled = getEnabled(item)
+		if enabled == nil then
+			button.Text = "ON"
+			return
+		end
+		button.Text = enabled and "ON" or "OFF"
+	end
+	
+	button.Active = true
+	button.Selectable = true
+	
+	selectedItem:GetPropertyChangedSignal("Value"):Connect(function()
+		setButtonText(selectedItem.Value)
+	end)
+	
+	button.Activated:Connect(function()
+		local item = selectedItem.Value
+		if not item then
+			warn("[Toggle] No selected item")
+			return
+		end
+		
+		local enabled = getEnabled(item)
+		enabled = not enabled
+		item:SetAttribute("Enabled", enabled)
+		
+		setButtonText(item)
+	end)
+	
+	setButtonText(selectedItem.Value)
+end
+
+-- ScrollingFrame Script
+local function setupScrollingFrame()
+	local TweenService = game:GetService("TweenService")
+	
+	local scroll = ScrollingFrame
+	
+	local itemClicked = scroll:FindFirstChild("ItemClicked")
+	if not itemClicked then
+		itemClicked = Instance.new("BindableEvent")
+		itemClicked.Name = "ItemClicked"
+		itemClicked.Parent = scroll
+	end
+	
+	local selectedItemValue = scroll:FindFirstChild("SelectedItem")
+	if not selectedItemValue then
+		selectedItemValue = Instance.new("ObjectValue")
+		selectedItemValue.Name = "SelectedItem"
+		selectedItemValue.Parent = scroll
+	end
+	
+	local function tween(obj, props, time)
+		return TweenService:Create(obj, TweenInfo.new(time, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), props)
+	end
+	
+	local function getScale(inst)
+		local s = inst:FindFirstChildOfClass("UIScale")
+		if not s then
+			s = Instance.new("UIScale")
+			s.Scale = 1
+			s.Parent = inst
+		end
+		return s
+	end
+	
+	local function mixToBlack(color, amount)
+		amount = math.clamp(amount or 0, 0, 1)
+		return color:Lerp(Color3.new(0, 0, 0), amount)
+	end
+	
+	local SELECT_BG = Color3.fromRGB(129, 35, 36)
+	local SELECT_OUT = Color3.fromRGB(209, 57, 59)
+	local DISABLED_BG = Color3.fromRGB(60, 60, 60)
+	local DISABLED_OUT = Color3.fromRGB(110, 110, 110)
+	
+	local selectedItem = nil
+	local selectedDefaults = nil
+	
+	local function applySelected(item)
+		local bg = item:FindFirstChild("Background")
+		local outline = item:FindFirstChild("Outline")
+		
+		local enabled = item:GetAttribute("Enabled")
+		if enabled == nil then enabled = true end
+		
+		if enabled then
+			if bg then tween(bg, { ImageColor3 = SELECT_BG }, 0.18):Play() end
+			if outline then tween(outline, { ImageColor3 = SELECT_OUT }, 0.18):Play() end
+		else
+			if bg then tween(bg, { ImageColor3 = DISABLED_BG }, 0.18):Play() end
+			if outline then tween(outline, { ImageColor3 = DISABLED_OUT }, 0.18):Play() end
+		end
+	end
+	
+	local function restoreDefaults(item, defaults)
+		local bg = item:FindFirstChild("Background")
+		local outline = item:FindFirstChild("Outline")
+		if bg and defaults and defaults.bg then tween(bg, { ImageColor3 = defaults.bg }, 0.18):Play() end
+		if outline and defaults and defaults.out then tween(outline, { ImageColor3 = defaults.out }, 0.18):Play() end
+	end
+	
+	local function bindFunctionItem(item)
+		if item.Name == "FunctionTemplate" then return end
+		
+		local hitbox = item:WaitForChild("Hitbox")
+		local bg = item:FindFirstChild("Background")
+		local outline = item:FindFirstChild("Outline")
+		local nameLabel = item:FindFirstChild("NameFunction")
+		
+		if item:GetAttribute("Enabled") == nil then
+			item:SetAttribute("Enabled", true)
+		end
+		
+		local bgDefault = bg and bg.ImageColor3 or nil
+		local outDefault = outline and outline.ImageColor3 or nil
+		
+		local hoverBlack = 0.10
+		local hovering = false
+		local pressed = false
+		
+		local scale = getScale(hitbox)
+		scale.Scale = 1
+		local tScale
+		
+		local function setIdle()
+			if pressed then return end
+			if item == selectedItem then return end
+			if tScale then tScale:Cancel() end
+			tScale = tween(scale, { Scale = 1 }, 0.14)
+			tScale:Play()
+			if bg and bgDefault then tween(bg, { ImageColor3 = bgDefault }, 0.16):Play() end
+			if outline and outDefault then tween(outline, { ImageColor3 = outDefault }, 0.16):Play() end
+		end
+		
+		local function setHover()
+			if pressed then return end
+			if item == selectedItem then return end
+			if tScale then tScale:Cancel() end
+			tScale = tween(scale, { Scale = 1.01 }, 0.14)
+			tScale:Play()
+			if bg and bgDefault then tween(bg, { ImageColor3 = mixToBlack(bgDefault, hoverBlack) }, 0.16):Play() end
+			if outline and outDefault then tween(outline, { ImageColor3 = mixToBlack(outDefault, 0.06) }, 0.16):Play() end
+		end
+		
+		local function setDownVisual()
+			if tScale then tScale:Cancel() end
+			tScale = tween(scale, { Scale = 0.985 }, 0.18)
+			tScale:Play()
+		end
+		
+		local function chooseThis()
+			if selectedItem and selectedItem ~= item then
+				restoreDefaults(selectedItem, selectedDefaults)
+			end
+			selectedItem = item
+			selectedDefaults = { bg = bgDefault, out = outDefault }
+			selectedItemValue.Value = item
+			applySelected(item)
+		end
+		
+		item:GetAttributeChangedSignal("Enabled"):Connect(function()
+			if item == selectedItem then
+				applySelected(item)
+			end
+		end)
+		
+		hitbox.Active = true
+		hitbox.Selectable = true
+		
+		hitbox.MouseEnter:Connect(function()
+			hovering = true
+			setHover()
+		end)
+		
+		hitbox.MouseLeave:Connect(function()
+			hovering = false
+			setIdle()
+		end)
+		
+		hitbox.InputBegan:Connect(function(input)
+			if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+				pressed = true
+				setDownVisual()
+			end
+		end)
+		
+		hitbox.InputEnded:Connect(function(input)
+			if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+				pressed = false
+				if item == selectedItem then
+					if hovering then
+						if tScale then tScale:Cancel() end
+						tScale = tween(scale, { Scale = 1.01 }, 0.14)
+						tScale:Play()
+					else
+						if tScale then tScale:Cancel() end
+						tScale = tween(scale, { Scale = 1 }, 0.14)
+						tScale:Play()
+					end
+				else
+					if hovering then setHover() else setIdle() end
+				end
+			end
+		end)
+		
+		hitbox.Activated:Connect(function()
+			chooseThis()
+			
+			local enabled = item:GetAttribute("Enabled")
+			if enabled == nil then enabled = true end
+			if not enabled then return end
+			
+			local key = (nameLabel and nameLabel.Text) or item.Name
+			itemClicked:Fire(item, key)
+		end)
+		
+		setIdle()
+	end
+	
+	for _, child in ipairs(scroll:GetChildren()) do
+		if child:IsA("Frame") and child.Name == "Function" then
+			bindFunctionItem(child)
+		end
+	end
+	
+	scroll.ChildAdded:Connect(function(child)
+		if child:IsA("Frame") and child.Name == "Function" then
+			task.defer(function()
+				if child.Parent then
+					bindFunctionItem(child)
+				end
+			end)
+		end
+	end)
+	
+	-- Update canvas size
+	local function updateCanvasSize()
+		local contentSize = UIListLayout.AbsoluteContentSize
+		ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, contentSize.Y)
+	end
+	
+	UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(updateCanvasSize)
+	updateCanvasSize()
+end
+
+-- Initialize all scripts
+setupCloseButton()
+setupToggle()
+setupScrollingFrame()
+
+-- API for creating items
+local Library = {}
+
+function Library:CreateFunction(name, callback)
+	local newItem = FunctionTemplate:Clone()
+	newItem.Name = "Function"
+	newItem.Visible = true
+	newItem.Parent = ScrollingFrame
+	
+	local nameLabel = newItem:FindFirstChild("NameFunction")
+	if nameLabel then
+		nameLabel.Text = name
+	end
+	
+	local itemClicked = ScrollingFrame:FindFirstChild("ItemClicked")
+	if itemClicked and callback then
+		local connection
+		connection = itemClicked.Event:Connect(function(item, key)
+			if item == newItem and key == name then
+				local enabled = item:GetAttribute("Enabled")
+				if enabled == nil then enabled = true end
+				if enabled then
+					callback()
+				end
+			end
+		end)
+	end
+	
+	return newItem
+end
+
+function Library:Toggle()
+	UILib.Enabled = not UILib.Enabled
+end
+
+function Library:Show()
+	UILib.Enabled = true
+end
+
+function Library:Hide()
+	UILib.Enabled = false
+end
+
+return Library
