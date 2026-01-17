@@ -214,7 +214,7 @@ ScrollingFrame.BorderSizePixel = 0
 ScrollingFrame.Position = UDim2.new(0.50000006, 0, 0.439335197, 0)
 ScrollingFrame.Size = UDim2.new(0.846310616, 0, 0.754670262, 0)
 ScrollingFrame.ZIndex = 4
-ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+ScrollingFrame.CanvasSize = UDim2.new(0, 0, 4, 0)
 ScrollingFrame.ScrollBarThickness = 0
 
 UIListLayout.Parent = ScrollingFrame
@@ -696,15 +696,6 @@ local function setupScrollingFrame()
 			end)
 		end
 	end)
-	
-	-- Update canvas size
-	local function updateCanvasSize()
-		local contentSize = UIListLayout.AbsoluteContentSize
-		ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, contentSize.Y)
-	end
-	
-	UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(updateCanvasSize)
-	updateCanvasSize()
 end
 
 -- Initialize all scripts
